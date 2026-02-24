@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GarageAI - Smart Garage Renovation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">🏠</span>
+            <span class="brand-name">GarageAI</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#upload">Upload</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Transform Your Garage with <span class="highlight">AI-Powered</span> Design</h1>
+            <p>Upload a photo of your garage and let our AI create stunning renovation visualizations featuring hexagonal LED lighting, metallic epoxy floors, and premium cabinets.</p>
+            <div class="hero-buttons">
+                <a href="#upload" class="btn btn-primary">Start Designing</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="before-after-preview">
+                <div class="preview-card">
+                    <span class="label">Before</span>
+                    <div class="placeholder-img before"></div>
+                </div>
+                <span class="arrow">→</span>
+                <div class="preview-card">
+                    <span class="label">After</span>
+                    <div class="placeholder-img after">
+                        <div class="hex-pattern"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <h2>What Our AI Can Do</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Design Mockups</h3>
+                <p>AI transforms your garage photos to show stunning renovation possibilities with realistic visualizations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Cost Estimates</h3>
+                <p>Get instant AI-powered cost estimates based on your space dimensions and renovation preferences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3>Smart Suggestions</h3>
+                <p>Receive personalized renovation ideas based on your garage type, size, and style preferences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3>Before/After Views</h3>
+                <p>See side-by-side comparisons of your original garage and the AI-generated renovation designs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section id="upload" class="upload-section">
+        <h2>Upload Your Garage Photo</h2>
+        <p class="upload-subtitle">Let AI transform your space in seconds</p>
+        
+        <div class="upload-container">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📷</div>
+                <h3>Drag & Drop your image here</h3>
+                <p>or click to browse files</p>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <p class="file-types">Supports: JPG, PNG, WEBP (Max 10MB)</p>
+            </div>
+            
+            <div class="image-preview" id="imagePreview" style="display: none;">
+                <img id="previewImg" src="" alt="Preview">
+                <button class="btn-remove" id="removeBtn">✕ Remove</button>
+            </div>
+        </div>
+
+        <!-- Renovation Options -->
+        <div class="options-container" id="optionsContainer" style="display: none;">
+            <h3>Choose Renovation Style</h3>
+            <div class="style-options">
+                <label class="style-option">
+                    <input type="radio" name="style" value="modern" checked>
+                    <span class="style-card featured-style">
+                        <span class="style-icon">⬡</span>
+                        <span class="style-name">Showroom</span>
+                        <span class="style-desc">Hex LED + Epoxy</span>
+                    </span>
+                </label>
+                <label class="style-option">
+                    <input type="radio" name="style" value="industrial">
+                    <span class="style-card">
+                        <span class="style-icon">🔩</span>
+                        <span class="style-name">Industrial</span>
+                    </span>
+                </label>
+                <label class="style-option">
+                    <input type="radio" name="style" value="workshop">
+                    <span class="style-card">
+                        <span class="style-icon">🛠️</span>
+                        <span class="style-name">Workshop</span>
+                    </span>
+                </label>
+                <label class="style-option">
+                    <input type="radio" name="style" value="gym">
+                    <span class="style-card">
+                        <span class="style-icon">💪</span>
+                        <span class="style-name">Home Gym</span>
+                    </span>
+                </label>
+                <label class="style-option">
+                    <input type="radio" name="style" value="office">
+                    <span class="style-card">
+                        <span class="style-icon">💼</span>
+                        <span class="style-name">Office</span>
+                    </span>
+                </label>
+                <label class="style-option">
+                    <input type="radio" name="style" value="storage">
+                    <span class="style-card">
+                        <span class="style-icon">📦</span>
+                        <span class="style-name">Storage</span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="additional-options">
+                <div class="option-group">
+                    <label for="budget">Budget Range</label>
+                    <select id="budget">
+                        <option value="low">$1,000 - $5,000</option>
+                        <option value="medium" selected>$5,000 - $15,000</option>
+                        <option value="high">$15,000 - $30,000</option>
+                        <option value="premium">$30,000+</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="priority">Main Priority</label>
+                    <select id="priority">
+                        <option value="aesthetics">Aesthetics</option>
+                        <option value="functionality" selected>Functionality</option>
+                        <option value="storage">Storage Space</option>
+                        <option value="durability">Durability</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-large" id="generateBtn">
+                <span class="btn-text">Generate AI Design</span>
+                <span class="btn-loading" style="display: none;">⏳ Processing...</span>
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container" id="resultsContainer" style="display: none;">
+            <h3>Your AI-Generated Renovation</h3>
+            
+            <div class="results-grid">
+                <!-- Before/After Comparison -->
+                <div class="result-card comparison-card">
+                    <h4>Before & After</h4>
+                    <div class="comparison-slider">
+                        <div class="comparison-images">
+                            <img id="beforeImage" src="" alt="Before">
+                            <img id="afterImage" src="" alt="After">
+                        </div>
+                        <input type="range" id="comparisonSlider" min="0" max="100" value="50">
+                    </div>
+                </div>
+
+                <!-- Cost Estimate -->
+                <div class="result-card estimate-card">
+                    <h4>💰 Cost Estimate</h4>
+                    <div class="estimate-content">
+                        <div class="estimate-total">
+                            <span class="estimate-label">Estimated Total</span>
+                            <span class="estimate-value" id="totalCost">$12,500</span>
+                        </div>
+                        <div class="estimate-breakdown" id="costBreakdown">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggestions -->
+                <div class="result-card suggestions-card">
+                    <h4>💡 AI Recommendations</h4>
+                    <ul class="suggestions-list" id="suggestionsList">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn btn-secondary" id="regenerateBtn">🔄 Generate New Design</button>
+                <button class="btn btn-primary" id="downloadBtn">📥 Download Results</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <h2>Simple Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Free</h3>
+                <div class="price">$0<span>/month</span></div>
+                <ul>
+                    <li>✓ 3 AI designs per month</li>
+                    <li>✓ Basic cost estimates</li>
+                    <li>✓ Standard resolution</li>
+                    <li>✗ Premium styles</li>
+                    <li>✗ Priority processing</li>
+                </ul>
+                <button class="btn btn-secondary">Get Started</button>
+            </div>
+            <div class="pricing-card featured">
+                <span class="popular-badge">Most Popular</span>
+                <h3>Pro</h3>
+                <div class="price">$29<span>/month</span></div>
+                <ul>
+                    <li>✓ Unlimited AI designs</li>
+                    <li>✓ Detailed cost breakdown</li>
+                    <li>✓ High resolution export</li>
+                    <li>✓ All premium styles</li>
+                    <li>✓ Priority processing</li>
+                </ul>
+                <button class="btn btn-primary">Start Free Trial</button>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">Custom</div>
+                <ul>
+                    <li>✓ Everything in Pro</li>
+                    <li>✓ API access</li>
+                    <li>✓ White-label solution</li>
+                    <li>✓ Dedicated support</li>
+                    <li>✓ Custom integrations</li>
+                </ul>
+                <button class="btn btn-secondary">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <h2>Get In Touch</h2>
+        <div class="contact-container">
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+            <div class="contact-info">
+                <div class="info-item">
+                    <span class="info-icon">📧</span>
+                    <span>hello@garageai.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📞</span>
+                    <span>+1 (555) 123-4567</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📍</span>
+                    <span>San Francisco, CA</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo">🏠</span>
+                <span class="brand-name">GarageAI</span>
+                <p>Transforming garages with AI-powered design</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GarageAI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
