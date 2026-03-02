@@ -3,295 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GarageAI - Smart Garage Renovation</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Transform Your Garage Into a Showroom | Premium Garage Makeovers</title>
+    <link rel="stylesheet" href="dark-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="dark-theme">
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-brand">
-            <span class="logo">🏠</span>
-            <span class="brand-name">GarageAI</span>
+        <div class="nav-container">
+            <a href="#home" class="nav-brand">
+                <div class="logo-icon">
+                    <i class="fas fa-warehouse"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">GARAGE</span>
+                    <span class="brand-tagline">TRANSFORMATIONS</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="#services">Products <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#flooring">Flooring</a>
+                        <a href="#cabinets">Cabinets & Storage</a>
+                        <a href="slatwall.html">Slatwall Panels</a>
+                        <a href="linea.html">LINEA Accessories</a>
+                        <a href="parking-locker.html">Parking Locker</a>
+                    </div>
+                </li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#video">Videos</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#consultation" class="btn btn-gold nav-cta">Get Free Design</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#upload">Upload</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-particles" id="particles"></div>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Transform Your Garage with <span class="highlight">AI-Powered</span> Design</h1>
-            <p>Upload a photo of your garage and let our AI create stunning renovation visualizations featuring hexagonal LED lighting, metallic epoxy floors, and premium cabinets.</p>
+            <h1 class="hero-title">
+                <span class="title-script">Transform Your Garage</span>
+                <span class="title-accent">Into a Showroom</span>
+            </h1>
+            <p class="hero-subtitle">Premium flooring, cabinets & lighting upgrades.</p>
             <div class="hero-buttons">
-                <a href="#upload" class="btn btn-primary">Start Designing</a>
-                <a href="#features" class="btn btn-secondary">Learn More</a>
+                <a href="#consultation" class="btn btn-gold btn-large">Get Free Design</a>
+                <a href="#gallery" class="btn btn-outline-gold btn-large">View Transformations</a>
             </div>
         </div>
-        <div class="hero-image">
-            <div class="before-after-preview">
-                <div class="preview-card">
-                    <span class="label">Before</span>
-                    <div class="placeholder-img before"></div>
+        <div class="hero-glow"></div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-content">
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span class="stat-number">500+</span>
+                    <span class="stat-text">Projects</span>
                 </div>
-                <span class="arrow">→</span>
-                <div class="preview-card">
-                    <span class="label">After</span>
-                    <div class="placeholder-img after">
-                        <div class="hex-pattern"></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <span class="stat-number">5-Year</span>
+                    <span class="stat-text">Warranty</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <i class="fas fa-drafting-compass"></i>
+                    <span class="stat-text">Free Design</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transformations Gallery -->
+    <section id="gallery" class="transformations-section">
+        <div class="container">
+            <h2 class="section-title">Transformations Gallery</h2>
+            <div class="transformations-grid">
+                <!-- Before Card -->
+                <div class="transform-card">
+                    <div class="transform-image before-img">
+                        <div class="transform-label">Before</div>
+                        <div class="transform-placeholder">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <button class="nav-arrow"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="transform-info">
+                        <div class="project-header">
+                            <i class="fas fa-folder"></i>
+                            <span>Project Name</span>
+                        </div>
+                        <div class="project-details">
+                            <div class="detail-item"><i class="fas fa-ruler-combined"></i> Garage Size</div>
+                            <div class="detail-row">
+                                <span><i class="fas fa-paint-roller"></i> Epoxy Flooring</span>
+                                <span>• Custom Cabinets</span>
+                            </div>
+                            <div class="detail-item"><i class="fas fa-box"></i> Overhead Storage</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- After Card -->
+                <div class="transform-card after-card">
+                    <div class="transform-image after-img">
+                        <div class="transform-label">After</div>
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Luxury Garage Transformation" class="transform-img">
+                        <button class="nav-arrow"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="transform-info">
+                        <h3 class="project-title">Modern Luxury Garage Upgrade</h3>
+                        <div class="project-meta">
+                            <div class="meta-col">
+                                <div class="meta-header"><i class="fas fa-clipboard-list"></i> Scope</div>
+                                <ul class="scope-list">
+                                    <li>• Epoxy floor installation</li>
+                                    <li>• Custom cabinets</li>
+                                    <li>• Slatwall storage</li>
+                                    <li>• LED lighting</li>
+                                </ul>
+                            </div>
+                            <div class="meta-col">
+                                <div class="meta-header">Timeline</div>
+                                <p class="timeline-text">5 days</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-outline-gold btn-small view-project-btn">View Full Project</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <h2>What Our AI Can Do</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🎨</div>
-                <h3>Design Mockups</h3>
-                <p>AI transforms your garage photos to show stunning renovation possibilities with realistic visualizations.</p>
+    <!-- Project Modal -->
+    <div id="projectModal" class="project-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2>Modern Luxury Garage Upgrade</h2>
+                <span class="project-badge">Completed Project</span>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3>Cost Estimates</h3>
-                <p>Get instant AI-powered cost estimates based on your space dimensions and renovation preferences.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💡</div>
-                <h3>Smart Suggestions</h3>
-                <p>Receive personalized renovation ideas based on your garage type, size, and style preferences.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📸</div>
-                <h3>Before/After Views</h3>
-                <p>See side-by-side comparisons of your original garage and the AI-generated renovation designs.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Upload Section -->
-    <section id="upload" class="upload-section">
-        <h2>Upload Your Garage Photo</h2>
-        <p class="upload-subtitle">Let AI transform your space in seconds</p>
-        
-        <div class="upload-container">
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📷</div>
-                <h3>Drag & Drop your image here</h3>
-                <p>or click to browse files</p>
-                <input type="file" id="fileInput" accept="image/*" hidden>
-                <p class="file-types">Supports: JPG, PNG, WEBP (Max 10MB)</p>
-            </div>
-            
-            <div class="image-preview" id="imagePreview" style="display: none;">
-                <img id="previewImg" src="" alt="Preview">
-                <button class="btn-remove" id="removeBtn">✕ Remove</button>
-            </div>
-        </div>
-
-        <!-- Renovation Options -->
-        <div class="options-container" id="optionsContainer" style="display: none;">
-            <h3>Choose Renovation Style</h3>
-            <div class="style-options">
-                <label class="style-option">
-                    <input type="radio" name="style" value="modern" checked>
-                    <span class="style-card featured-style">
-                        <span class="style-icon">⬡</span>
-                        <span class="style-name">Showroom</span>
-                        <span class="style-desc">Hex LED + Epoxy</span>
-                    </span>
-                </label>
-                <label class="style-option">
-                    <input type="radio" name="style" value="industrial">
-                    <span class="style-card">
-                        <span class="style-icon">🔩</span>
-                        <span class="style-name">Industrial</span>
-                    </span>
-                </label>
-                <label class="style-option">
-                    <input type="radio" name="style" value="workshop">
-                    <span class="style-card">
-                        <span class="style-icon">🛠️</span>
-                        <span class="style-name">Workshop</span>
-                    </span>
-                </label>
-                <label class="style-option">
-                    <input type="radio" name="style" value="gym">
-                    <span class="style-card">
-                        <span class="style-icon">💪</span>
-                        <span class="style-name">Home Gym</span>
-                    </span>
-                </label>
-                <label class="style-option">
-                    <input type="radio" name="style" value="office">
-                    <span class="style-card">
-                        <span class="style-icon">💼</span>
-                        <span class="style-name">Office</span>
-                    </span>
-                </label>
-                <label class="style-option">
-                    <input type="radio" name="style" value="storage">
-                    <span class="style-card">
-                        <span class="style-icon">📦</span>
-                        <span class="style-name">Storage</span>
-                    </span>
-                </label>
-            </div>
-
-            <div class="additional-options">
-                <div class="option-group">
-                    <label for="budget">Budget Range</label>
-                    <select id="budget">
-                        <option value="low">$1,000 - $5,000</option>
-                        <option value="medium" selected>$5,000 - $15,000</option>
-                        <option value="high">$15,000 - $30,000</option>
-                        <option value="premium">$30,000+</option>
-                    </select>
-                </div>
-                <div class="option-group">
-                    <label for="priority">Main Priority</label>
-                    <select id="priority">
-                        <option value="aesthetics">Aesthetics</option>
-                        <option value="functionality" selected>Functionality</option>
-                        <option value="storage">Storage Space</option>
-                        <option value="durability">Durability</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn btn-primary btn-large" id="generateBtn">
-                <span class="btn-text">Generate AI Design</span>
-                <span class="btn-loading" style="display: none;">⏳ Processing...</span>
-            </button>
-        </div>
-
-        <!-- Results Section -->
-        <div class="results-container" id="resultsContainer" style="display: none;">
-            <h3>Your AI-Generated Renovation</h3>
-            
-            <div class="results-grid">
-                <!-- Before/After Comparison -->
-                <div class="result-card comparison-card">
-                    <h4>Before & After</h4>
-                    <div class="comparison-slider">
-                        <div class="comparison-images">
-                            <img id="beforeImage" src="" alt="Before">
-                            <img id="afterImage" src="" alt="After">
+            <div class="modal-body">
+                <div class="modal-gallery">
+                    <div class="gallery-main">
+                        <div class="gallery-before">
+                            <span class="gallery-label">Before</span>
+                            <div class="gallery-placeholder before-img">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
                         </div>
-                        <input type="range" id="comparisonSlider" min="0" max="100" value="50">
-                    </div>
-                </div>
-
-                <!-- Cost Estimate -->
-                <div class="result-card estimate-card">
-                    <h4>💰 Cost Estimate</h4>
-                    <div class="estimate-content">
-                        <div class="estimate-total">
-                            <span class="estimate-label">Estimated Total</span>
-                            <span class="estimate-value" id="totalCost">$12,500</span>
-                        </div>
-                        <div class="estimate-breakdown" id="costBreakdown">
-                            <!-- Populated by JS -->
+                        <div class="gallery-after">
+                            <span class="gallery-label">After</span>
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Luxury Garage After" class="gallery-img">
                         </div>
                     </div>
                 </div>
+                <div class="modal-details">
+                    <div class="detail-section">
+                        <h3><i class="fas fa-info-circle"></i> Project Overview</h3>
+                        <p>Complete garage transformation featuring premium finishes, custom storage solutions, and state-of-the-art lighting. This project showcases our commitment to turning ordinary spaces into extraordinary functional areas.</p>
+                    </div>
+                    <div class="detail-section">
+                        <h3><i class="fas fa-clipboard-list"></i> Scope of Work</h3>
+                        <ul class="modal-scope-list">
+                            <li><i class="fas fa-check"></i> Premium epoxy floor coating</li>
+                            <li><i class="fas fa-check"></i> Custom cabinet installation</li>
+                            <li><i class="fas fa-check"></i> Slatwall storage system</li>
+                            <li><i class="fas fa-check"></i> LED lighting upgrade</li>
+                            <li><i class="fas fa-check"></i> Climate control integration</li>
+                        </ul>
+                    </div>
+                    <div class="detail-stats">
+                        <div class="stat-box">
+                            <span class="stat-value">5</span>
+                            <span class="stat-label">Days</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value">450</span>
+                            <span class="stat-label">Sq. Ft.</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value">100%</span>
+                            <span class="stat-label">Satisfaction</span>
+                        </div>
+                    </div>
+                    <a href="#contact" class="btn btn-gold modal-cta">Get a Similar Transformation</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Suggestions -->
-                <div class="result-card suggestions-card">
-                    <h4>💡 AI Recommendations</h4>
-                    <ul class="suggestions-list" id="suggestionsList">
-                        <!-- Populated by JS -->
+    <!-- Services Included -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 class="section-title centered">Services Included</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image epoxy-bg">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="service-title">EPOXY BEARING</h3>
+                    <ul class="service-list">
+                        <li>• Epoxy Flooring</li>
+                        <li>• Custom Cabinets</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-image cabinets-bg">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h3 class="service-title">CUSTOM CABINETS</h3>
+                    <ul class="service-list">
+                        <li>• Custom Cabinetry</li>
+                        <li>• Storage Design</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-image storage-bg">
+                        <i class="fas fa-boxes-stacked"></i>
+                    </div>
+                    <h3 class="service-title">STORAGE SYSTEMS</h3>
+                    <ul class="service-list">
+                        <li>• Slatwall</li>
+                        <li>• LED Lighting</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-image lighting-bg">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="service-title">LIGHTING UPGRADES</h3>
+                    <ul class="service-list">
+                        <li>• Installation</li>
+                        <li>• Motion Sensors</li>
                     </ul>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="result-actions">
-                <button class="btn btn-secondary" id="regenerateBtn">🔄 Generate New Design</button>
-                <button class="btn btn-primary" id="downloadBtn">📥 Download Results</button>
+    <!-- Video Section -->
+    <section id="video" class="video-section">
+        <div class="container">
+            <h2 class="section-title centered">See The Transformation In Motion</h2>
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <div class="video-placeholder">
+                        <i class="fas fa-car-side"></i>
+                        <button class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-outline-gold video-btn">Play Video</a>
             </div>
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
-        <h2>Simple Pricing</h2>
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <h3>Free</h3>
-                <div class="price">$0<span>/month</span></div>
-                <ul>
-                    <li>✓ 3 AI designs per month</li>
-                    <li>✓ Basic cost estimates</li>
-                    <li>✓ Standard resolution</li>
-                    <li>✗ Premium styles</li>
-                    <li>✗ Priority processing</li>
-                </ul>
-                <button class="btn btn-secondary">Get Started</button>
-            </div>
-            <div class="pricing-card featured">
-                <span class="popular-badge">Most Popular</span>
-                <h3>Pro</h3>
-                <div class="price">$29<span>/month</span></div>
-                <ul>
-                    <li>✓ Unlimited AI designs</li>
-                    <li>✓ Detailed cost breakdown</li>
-                    <li>✓ High resolution export</li>
-                    <li>✓ All premium styles</li>
-                    <li>✓ Priority processing</li>
-                </ul>
-                <button class="btn btn-primary">Start Free Trial</button>
-            </div>
-            <div class="pricing-card">
-                <h3>Enterprise</h3>
-                <div class="price">Custom</div>
-                <ul>
-                    <li>✓ Everything in Pro</li>
-                    <li>✓ API access</li>
-                    <li>✓ White-label solution</li>
-                    <li>✓ Dedicated support</li>
-                    <li>✓ Custom integrations</li>
-                </ul>
-                <button class="btn btn-secondary">Contact Sales</button>
+    <!-- Consultation CTA -->
+    <section id="consultation" class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Garage?</h2>
+                <p>Get a free design consultation and see what's possible for your space.</p>
+                <form class="consultation-form" id="consultationForm">
+                    <div class="form-row">
+                        <input type="text" placeholder="Your Name" required>
+                        <input type="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="tel" placeholder="Phone Number">
+                        <select>
+                            <option value="">Select Service</option>
+                            <option value="flooring">Epoxy Flooring</option>
+                            <option value="cabinets">Custom Cabinets</option>
+                            <option value="storage">Storage Systems</option>
+                            <option value="lighting">Lighting Upgrades</option>
+                            <option value="complete">Complete Makeover</option>
+                        </select>
+                    </div>
+                    <textarea placeholder="Tell us about your project..."></textarea>
+                    <button type="submit" class="btn btn-gold btn-large">Get Free Design</button>
+                </form>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <h2>Get In Touch</h2>
-        <div class="contact-container">
-            <form class="contact-form" id="contactForm">
-                <div class="form-group">
-                    <input type="text" placeholder="Your Name" required>
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>1-866-465-4278</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@garagetransformations.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Mon-Fri 8am-6pm</span>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <input type="email" placeholder="Your Email" required>
+                <div class="quick-links">
+                    <h3>Products</h3>
+                    <a href="slatwall.html">Slatwall Panels</a>
+                    <a href="linea.html">LINEA Accessories</a>
+                    <a href="parking-locker.html">Parking Locker</a>
+                    <a href="#services">All Services</a>
                 </div>
-                <div class="form-group">
-                    <textarea placeholder="Your Message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </form>
-            <div class="contact-info">
-                <div class="info-item">
-                    <span class="info-icon">📧</span>
-                    <span>hello@garageai.com</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📞</span>
-                    <span>+1 (555) 123-4567</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📍</span>
-                    <span>San Francisco, CA</span>
+                <div class="quick-links">
+                    <h3>Company</h3>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#video">Videos</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
                 </div>
             </div>
         </div>
@@ -299,30 +351,111 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <span class="logo">🏠</span>
-                <span class="brand-name">GarageAI</span>
-                <p>Transforming garages with AI-powered design</p>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 Garage Transformations. All rights reserved.</p>
+                <div class="footer-badges">
+                    <span><i class="fas fa-shield-halved"></i> 5-Year Warranty</span>
+                    <span><i class="fas fa-award"></i> Premium Quality</span>
+                </div>
             </div>
-            <div class="footer-links">
-                <h4>Quick Links</h4>
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#contact">Contact</a>
-            </div>
-            <div class="footer-links">
-                <h4>Legal</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookie Policy</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 GarageAI. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.remove('dark-theme');
+            body.classList.add('light-theme');
+        }
+        
+        themeToggle?.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            body.classList.toggle('light-theme');
+            
+            // Save preference
+            const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+            localStorage.setItem('theme', currentTheme);
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Form submission
+        document.getElementById('consultationForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you! We will contact you shortly with your free design consultation.');
+            this.reset();
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Particle effect
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Project Modal
+        const modal = document.getElementById('projectModal');
+        const viewProjectBtn = document.querySelector('.view-project-btn');
+        const modalClose = document.querySelector('.modal-close');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const modalCta = document.querySelector('.modal-cta');
+
+        if (viewProjectBtn) {
+            viewProjectBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (modalClose) modalClose.addEventListener('click', closeModal);
+        if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+        if (modalCta) {
+            modalCta.addEventListener('click', () => {
+                closeModal();
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
