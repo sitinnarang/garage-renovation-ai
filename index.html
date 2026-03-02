@@ -417,6 +417,19 @@
             <p class="section-subtitle centered">Use artificial intelligence to visualize, plan, and estimate your garage transformation</p>
             
             <div class="ai-features-grid">
+                <!-- AI Garage Analysis - NEW PRIMARY FEATURE -->
+                <div class="ai-feature-card featured">
+                    <div class="ai-feature-badge">Most Popular</div>
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                    <h3>Full Garage Analysis</h3>
+                    <p>Upload a photo and get a comprehensive renovation plan with expert insights</p>
+                    <button class="btn btn-gold" id="openGarageAnalysis">
+                        <i class="fas fa-microscope"></i> Analyze My Garage
+                    </button>
+                </div>
+                
                 <!-- AI Image Generator -->
                 <div class="ai-feature-card">
                     <div class="ai-feature-icon">
@@ -529,6 +542,76 @@
                     </div>
                     <div class="recommendations-list" id="recommendationsList">
                         <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Full Garage Analysis Modal -->
+    <div id="analysisModal" class="ai-modal">
+        <div class="ai-modal-overlay"></div>
+        <div class="ai-modal-content ai-modal-xlarge">
+            <button class="ai-modal-close"><i class="fas fa-times"></i></button>
+            <div class="ai-modal-header">
+                <h2><i class="fas fa-microscope"></i> Complete Garage Analysis</h2>
+                <p>Upload a photo for a comprehensive AI-powered renovation assessment</p>
+            </div>
+            <div class="ai-modal-body">
+                <div class="analysis-upload-section" id="analysisUpload">
+                    <div class="upload-area" id="analysisDropzone">
+                        <div class="upload-icon-large">
+                            <i class="fas fa-warehouse"></i>
+                            <i class="fas fa-search-plus upload-overlay-icon"></i>
+                        </div>
+                        <h3>Upload Your Garage Photo</h3>
+                        <p>Our AI will provide a detailed renovation assessment including:</p>
+                        <ul class="analysis-features-list">
+                            <li><i class="fas fa-check-circle"></i> Condition assessment & ratings</li>
+                            <li><i class="fas fa-check-circle"></i> Flooring analysis & recommendations</li>
+                            <li><i class="fas fa-check-circle"></i> Storage & organization evaluation</li>
+                            <li><i class="fas fa-check-circle"></i> Lighting assessment</li>
+                            <li><i class="fas fa-check-circle"></i> Style recommendations</li>
+                            <li><i class="fas fa-check-circle"></i> Phased renovation plan</li>
+                            <li><i class="fas fa-check-circle"></i> Investment estimates</li>
+                        </ul>
+                        <div class="upload-buttons">
+                            <label class="btn btn-gold btn-large">
+                                <i class="fas fa-upload"></i> Choose Photo
+                                <input type="file" id="analysisFileInput" accept="image/*" hidden>
+                            </label>
+                        </div>
+                        <span class="upload-hint">Supports JPG, PNG up to 10MB</span>
+                    </div>
+                    <div class="analysis-preview" id="analysisPreview">
+                        <div class="preview-image-container">
+                            <img id="analysisPreviewImg" alt="Your Garage">
+                            <button class="change-photo-btn" id="changeAnalysisPhoto">
+                                <i class="fas fa-redo"></i> Change Photo
+                            </button>
+                        </div>
+                        <button class="btn btn-gold btn-large" id="runAnalysis">
+                            <i class="fas fa-brain"></i> Run Full AI Analysis
+                        </button>
+                    </div>
+                </div>
+                <div class="analysis-results" id="analysisResults">
+                    <div class="ai-loading" id="analysisLoading">
+                        <div class="loading-animation">
+                            <i class="fas fa-cog fa-spin"></i>
+                            <i class="fas fa-brain fa-pulse"></i>
+                        </div>
+                        <h3>AI Analyzing Your Garage...</h3>
+                        <p>Examining flooring, storage, lighting, and more</p>
+                        <div class="loading-steps">
+                            <span class="step active">Detecting garage layout</span>
+                            <span class="step">Analyzing floor condition</span>
+                            <span class="step">Evaluating storage needs</span>
+                            <span class="step">Generating recommendations</span>
+                        </div>
+                    </div>
+                    <div class="analysis-content" id="analysisContent">
+                        <!-- Analysis results populated by JS -->
                     </div>
                 </div>
             </div>
@@ -1609,6 +1692,354 @@
                 `;
             }).join('');
         }
+        
+        // ==================== AI Full Garage Analysis ====================
+        const analysisModal = document.getElementById('analysisModal');
+        const openGarageAnalysis = document.getElementById('openGarageAnalysis');
+        const analysisDropzone = document.getElementById('analysisDropzone');
+        const analysisFileInput = document.getElementById('analysisFileInput');
+        const analysisPreview = document.getElementById('analysisPreview');
+        const analysisPreviewImg = document.getElementById('analysisPreviewImg');
+        const runAnalysis = document.getElementById('runAnalysis');
+        const changeAnalysisPhoto = document.getElementById('changeAnalysisPhoto');
+        const analysisResults = document.getElementById('analysisResults');
+        const analysisLoading = document.getElementById('analysisLoading');
+        const analysisContent = document.getElementById('analysisContent');
+        
+        let analysisImageData = null;
+        
+        openGarageAnalysis?.addEventListener('click', () => openAIModal(analysisModal));
+        analysisModal?.querySelector('.ai-modal-close')?.addEventListener('click', () => closeAIModal(analysisModal));
+        analysisModal?.querySelector('.ai-modal-overlay')?.addEventListener('click', () => closeAIModal(analysisModal));
+        
+        function handleAnalysisFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                analysisImageData = e.target.result;
+                analysisPreviewImg.src = analysisImageData;
+                analysisDropzone.style.display = 'none';
+                analysisPreview.style.display = 'flex';
+                analysisResults?.classList.remove('show');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        changeAnalysisPhoto?.addEventListener('click', () => {
+            analysisDropzone.style.display = 'block';
+            analysisPreview.style.display = 'none';
+            analysisImageData = null;
+            analysisResults?.classList.remove('show');
+        });
+        
+        analysisFileInput?.addEventListener('change', (e) => handleAnalysisFile(e.target.files[0]));
+        
+        analysisDropzone?.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            analysisDropzone.classList.add('dragover');
+        });
+        
+        analysisDropzone?.addEventListener('dragleave', () => {
+            analysisDropzone.classList.remove('dragover');
+        });
+        
+        analysisDropzone?.addEventListener('drop', (e) => {
+            e.preventDefault();
+            analysisDropzone.classList.remove('dragover');
+            handleAnalysisFile(e.dataTransfer.files[0]);
+        });
+        
+        // Loading step animation
+        function animateLoadingSteps() {
+            const steps = analysisLoading?.querySelectorAll('.step');
+            if (!steps) return;
+            let currentStep = 0;
+            const interval = setInterval(() => {
+                steps.forEach((step, i) => {
+                    step.classList.toggle('active', i <= currentStep);
+                });
+                currentStep++;
+                if (currentStep >= steps.length) {
+                    clearInterval(interval);
+                }
+            }, 1500);
+            return interval;
+        }
+        
+        runAnalysis?.addEventListener('click', async () => {
+            if (!analysisImageData) return;
+            
+            analysisResults?.classList.add('show');
+            analysisLoading?.classList.add('show');
+            analysisContent.innerHTML = '';
+            
+            const loadingInterval = animateLoadingSteps();
+            
+            try {
+                const prompt = (typeof AI_CONFIG !== 'undefined' && AI_CONFIG.PROMPTS?.garage_analysis)
+                    ? AI_CONFIG.PROMPTS.garage_analysis
+                    : 'Analyze this garage and provide comprehensive renovation recommendations.';
+                
+                const response = await callOpenAIVision(analysisImageData, prompt);
+                
+                clearInterval(loadingInterval);
+                displayAnalysisResults(response);
+            } catch (error) {
+                clearInterval(loadingInterval);
+                console.error('Analysis error:', error);
+                analysisContent.innerHTML = `
+                    <div class="analysis-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Analysis Failed</h3>
+                        <p>Unable to analyze the image. Please try again with a clearer photo.</p>
+                        <button class="btn btn-outline-gold" onclick="document.getElementById('changeAnalysisPhoto').click()">
+                            <i class="fas fa-redo"></i> Try Different Photo
+                        </button>
+                    </div>
+                `;
+            } finally {
+                analysisLoading?.classList.remove('show');
+            }
+        });
+        
+        function displayAnalysisResults(analysisText) {
+            // Convert markdown-style text to HTML
+            const formattedHtml = formatAnalysisText(analysisText);
+            
+            // Curated inspiration images for different styles
+            const inspirationImages = [
+                {
+                    url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+                    style: 'Modern Luxury',
+                    desc: 'Metallic epoxy floor, custom cabinets, LED hexagon lighting'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
+                    style: 'Showroom Style',
+                    desc: 'High-gloss floor, organized storage, recessed lighting'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80',
+                    style: 'Premium Finish',
+                    desc: 'Designer cabinets, tile flooring, smart climate control'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',
+                    style: 'Industrial Workshop',
+                    desc: 'Heavy-duty workbench, wall tool storage, bright shop lighting'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&q=80',
+                    style: 'Car Enthusiast',
+                    desc: 'Automotive theme, display lighting, checkered flooring'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80',
+                    style: 'Multi-Purpose Space',
+                    desc: 'Flex zones, overhead storage, gym area, workstation'
+                }
+            ];
+            
+            const inspirationHtml = inspirationImages.map(img => `
+                <div class="inspiration-card">
+                    <div class="inspiration-image">
+                        <img src="${img.url}" alt="${img.style}" loading="lazy">
+                        <div class="inspiration-overlay">
+                            <span class="style-tag">${img.style}</span>
+                        </div>
+                    </div>
+                    <div class="inspiration-info">
+                        <p>${img.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            analysisContent.innerHTML = `
+                <div class="analysis-report">
+                    <div class="analysis-header">
+                        <div class="analysis-image-thumb">
+                            <img src="${analysisImageData}" alt="Analyzed Garage">
+                        </div>
+                        <div class="analysis-title">
+                            <h3><i class="fas fa-clipboard-check"></i> AI Garage Assessment Report</h3>
+                            <p class="analysis-date">Generated on ${new Date().toLocaleDateString('en-US', { 
+                                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                            })}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Inspiration Gallery -->
+                    <div class="inspiration-section">
+                        <h3><i class="fas fa-lightbulb"></i> How Your Garage Could Look</h3>
+                        <p class="inspiration-subtitle">Based on your space, here are some transformation possibilities:</p>
+                        <div class="inspiration-gallery">
+                            ${inspirationHtml}
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-body">
+                        <h3 class="analysis-section-header"><i class="fas fa-file-alt"></i> Detailed Assessment</h3>
+                        ${formattedHtml}
+                    </div>
+                    <div class="analysis-actions">
+                        <button class="btn btn-gold" onclick="document.querySelector('#consultation')?.scrollIntoView({behavior:'smooth'}); closeAIModal(analysisModal);">
+                            <i class="fas fa-calendar-check"></i> Schedule Free Consultation
+                        </button>
+                        <button class="btn btn-outline-gold" onclick="printAnalysis()">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                        <button class="btn btn-outline-gold" onclick="document.getElementById('changeAnalysisPhoto').click()">
+                            <i class="fas fa-redo"></i> Analyze Another
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function formatAnalysisText(text) {
+            // Convert headers
+            let html = text
+                .replace(/^### (.*$)/gm, '<h4 class="analysis-section-title">$1</h4>')
+                .replace(/^## (.*$)/gm, '<h3 class="analysis-section-header">$1</h3>')
+                .replace(/^# (.*$)/gm, '<h2 class="analysis-main-header">$1</h2>')
+                // Convert numbered sections like "1. OVERALL ASSESSMENT"
+                .replace(/^(\d+)\.\s+([A-Z][A-Z\s&]+)$/gm, '<h3 class="analysis-section-header"><span class="section-number">$1</span>$2</h3>')
+                // Convert bold
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Convert bullet points
+                .replace(/^[-•]\s+(.*$)/gm, '<li>$1</li>')
+                // Convert phase items
+                .replace(/^Phase (\d)/gm, '<div class="phase-marker">Phase $1</div>')
+                // Convert ratings
+                .replace(/Rating:\s*(\d+)\/10/g, '<span class="rating-badge">Rating: $1/10</span>')
+                // Convert price ranges
+                .replace(/\$[\d,]+\s*-\s*\$[\d,]+/g, '<span class="price-highlight">$&</span>')
+                // Paragraphs
+                .replace(/\n\n/g, '</p><p>')
+                // Wrap list items
+                .replace(/(<li>.*<\/li>\n?)+/g, '<ul class="analysis-list">$&</ul>');
+            
+            return `<div class="analysis-text"><p>${html}</p></div>`;
+        }
+        
+        function printAnalysis() {
+            const printContent = analysisContent.innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Garage Analysis Report - Garage Transformations</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; max-width: 800px; margin: auto; }
+                        h2, h3, h4 { color: #333; margin-top: 20px; }
+                        .analysis-section-header { background: #f5f5f5; padding: 10px 15px; border-left: 4px solid #d4a855; }
+                        .rating-badge { background: #d4a855; color: white; padding: 2px 8px; border-radius: 4px; }
+                        .price-highlight { color: #2e7d32; font-weight: bold; }
+                        ul { margin: 10px 0; }
+                        li { margin: 5px 0; }
+                        .analysis-image-thumb img { max-width: 300px; border-radius: 8px; }
+                        .inspiration-gallery { display: flex; flex-wrap: wrap; gap: 15px; }
+                        .inspiration-card { width: 200px; }
+                        .inspiration-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
+                        @media print { body { padding: 20px; } }
+                    </style>
+                </head>
+                <body>${printContent}</body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Image Lightbox
+        function createLightbox() {
+            if (document.getElementById('imageLightbox')) return;
+            
+            const lightbox = document.createElement('div');
+            lightbox.id = 'imageLightbox';
+            lightbox.className = 'image-lightbox';
+            lightbox.innerHTML = `
+                <div class="lightbox-overlay"></div>
+                <div class="lightbox-content">
+                    <button class="lightbox-close"><i class="fas fa-times"></i></button>
+                    <img class="lightbox-image" src="" alt="Large view">
+                    <div class="lightbox-caption">
+                        <h4></h4>
+                        <p></p>
+                    </div>
+                    <div class="lightbox-nav">
+                        <button class="lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+                        <button class="lightbox-next"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(lightbox);
+            
+            // Close handlers
+            lightbox.querySelector('.lightbox-overlay').onclick = closeLightbox;
+            lightbox.querySelector('.lightbox-close').onclick = closeLightbox;
+            
+            // Nav handlers
+            lightbox.querySelector('.lightbox-prev').onclick = () => navigateLightbox(-1);
+            lightbox.querySelector('.lightbox-next').onclick = () => navigateLightbox(1);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+            });
+        }
+        
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+        
+        function openLightbox(images, index) {
+            createLightbox();
+            currentLightboxImages = images;
+            currentLightboxIndex = index;
+            updateLightbox();
+            document.getElementById('imageLightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            document.getElementById('imageLightbox')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function navigateLightbox(direction) {
+            currentLightboxIndex += direction;
+            if (currentLightboxIndex < 0) currentLightboxIndex = currentLightboxImages.length - 1;
+            if (currentLightboxIndex >= currentLightboxImages.length) currentLightboxIndex = 0;
+            updateLightbox();
+        }
+        
+        function updateLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            const img = currentLightboxImages[currentLightboxIndex];
+            lightbox.querySelector('.lightbox-image').src = img.url.replace('w=600', 'w=1200');
+            lightbox.querySelector('.lightbox-caption h4').textContent = img.style;
+            lightbox.querySelector('.lightbox-caption p').textContent = img.desc;
+        }
+        
+        // Attach lightbox to inspiration cards (delegated event)
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.inspiration-card');
+            if (card) {
+                const gallery = card.closest('.inspiration-gallery');
+                if (!gallery) return;
+                const cards = gallery.querySelectorAll('.inspiration-card');
+                const images = Array.from(cards).map(c => ({
+                    url: c.querySelector('img').src,
+                    style: c.querySelector('.style-tag')?.textContent || '',
+                    desc: c.querySelector('.inspiration-info p')?.textContent || ''
+                }));
+                const index = Array.from(cards).indexOf(card);
+                openLightbox(images, index);
+            }
+        });
         
         // ==================== AI Quote Generator ====================
         const quoteModal = document.getElementById('quoteModal');
