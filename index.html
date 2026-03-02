@@ -787,12 +787,12 @@
                 <p>Get a free design consultation and see what's possible for your space.</p>
                 <form class="consultation-form" id="consultationForm">
                     <div class="form-row">
-                        <input type="text" placeholder="Your Name" required>
-                        <input type="email" placeholder="Email Address" required>
+                        <input type="text" name="name" id="consultName" placeholder="Your Name" required>
+                        <input type="email" name="email" id="consultEmail" placeholder="Email Address" required>
                     </div>
                     <div class="form-row">
-                        <input type="tel" placeholder="Phone Number">
-                        <select>
+                        <input type="tel" name="phone" id="consultPhone" placeholder="Phone Number">
+                        <select name="service" id="consultService">
                             <option value="">Select Service</option>
                             <option value="flooring">Epoxy Flooring</option>
                             <option value="cabinets">Custom Cabinets</option>
@@ -801,8 +801,8 @@
                             <option value="complete">Complete Makeover</option>
                         </select>
                     </div>
-                    <textarea placeholder="Tell us about your project..."></textarea>
-                    <button type="submit" class="btn btn-gold btn-large">Get Free Design</button>
+                    <textarea name="message" id="consultMessage" placeholder="Tell us about your project..."></textarea>
+                    <button type="submit" class="btn btn-gold btn-large" id="consultSubmitBtn">Get Free Design</button>
                 </form>
             </div>
         </div>
@@ -864,7 +864,70 @@
         </div>
     </footer>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-notification">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">Success!</div>
+            <div class="toast-message">Your message has been sent.</div>
+        </div>
+        <button class="toast-close" onclick="hideToast()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="toast-progress"></div>
+    </div>
+
     <script>
+        // Toast Notification Functions
+        let toastTimeout;
+        
+        function showToast(type, title, message) {
+            const toast = document.getElementById('toast');
+            const toastIcon = toast.querySelector('.toast-icon i');
+            const toastTitle = toast.querySelector('.toast-title');
+            const toastMessage = toast.querySelector('.toast-message');
+            const toastProgress = toast.querySelector('.toast-progress');
+            
+            // Set content
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // Set icon and color based on type
+            toast.className = 'toast-notification';
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                toastIcon.className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                toast.classList.add('toast-error');
+                toastIcon.className = 'fas fa-exclamation-circle';
+            } else if (type === 'info') {
+                toast.classList.add('toast-info');
+                toastIcon.className = 'fas fa-info-circle';
+            }
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Reset and start progress bar animation
+            toastProgress.style.animation = 'none';
+            toastProgress.offsetHeight; // Trigger reflow
+            toastProgress.style.animation = 'toastProgress 5s linear forwards';
+            
+            // Auto hide after 5 seconds
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                hideToast();
+            }, 5000);
+        }
+        
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('show');
+            clearTimeout(toastTimeout);
+        }
+
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -982,6 +1045,49 @@
             });
         });
 
+        // Consultation Form Submission
+        const consultationForm = document.getElementById('consultationForm');
+        const consultSubmitBtn = document.getElementById('consultSubmitBtn');
+        
+        consultationForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('consultName').value,
+                email: document.getElementById('consultEmail').value,
+                phone: document.getElementById('consultPhone').value,
+                service: document.getElementById('consultService').value,
+                message: document.getElementById('consultMessage').value
+            };
+            
+            // Disable button and show loading
+            consultSubmitBtn.disabled = true;
+            consultSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            try {
+                const response = await fetch('/api/consultation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast('success', 'Request Submitted!', 'Thank you! We will contact you shortly with your free design consultation.');
+                    consultationForm.reset();
+                } else {
+                    throw new Error(data.error || 'Failed to submit');
+                }
+            } catch (error) {
+                showToast('error', 'Submission Failed', 'Something went wrong. Please try again or call us directly.');
+            } finally {
+                consultSubmitBtn.disabled = false;
+                consultSubmitBtn.innerHTML = 'Get Free Design';
+            }
+        });
+
         // Video Player Controls
         const garageVideo = document.getElementById('garageVideo');
         const videoOverlay = document.getElementById('videoOverlay');
@@ -1029,13 +1135,6 @@
         // Mobile menu toggle
         document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
             document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // Form submission
-        document.getElementById('consultationForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you! We will contact you shortly with your free design consultation.');
-            this.reset();
         });
 
         // Smooth scroll

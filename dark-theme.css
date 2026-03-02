@@ -17,22 +17,22 @@
     --border-gold: rgba(212, 168, 85, 0.35);
 }
 
-/* Light Theme Variables */
+/* Light Theme Variables - Light Blue */
 .light-theme {
-    --bg-dark: #f5f5f5;
-    --bg-darker: #e8e8e8;
-    --bg-card: #ffffff;
-    --bg-card-hover: #fafafa;
+    --bg-dark: #e8eef5;
+    --bg-darker: #dce5f0;
+    --bg-card: #f0f5fa;
+    --bg-card-hover: #f5f9ff;
     --gold: #b8923f;
     --gold-light: #d4a855;
     --gold-dark: #9a7a32;
     --orange: #e67a35;
     --orange-glow: rgba(230, 122, 53, 0.2);
-    --text-primary: #1a1a1a;
-    --text-secondary: rgba(26, 26, 26, 0.75);
-    --text-muted: rgba(26, 26, 26, 0.55);
-    --border-color: rgba(0, 0, 0, 0.1);
-    --border-gold: rgba(184, 146, 63, 0.3);
+    --text-primary: #1a2a3a;
+    --text-secondary: rgba(26, 42, 58, 0.8);
+    --text-muted: rgba(26, 42, 58, 0.6);
+    --border-color: rgba(30, 60, 100, 0.15);
+    --border-gold: rgba(184, 146, 63, 0.35);
 }
 
 * {
@@ -1050,6 +1050,166 @@ body {
 .consultation-form textarea {
     min-height: 120px;
     resize: vertical;
+}
+
+.form-message {
+    margin-top: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: none;
+}
+
+.form-message.success {
+    display: block;
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.form-message.error {
+    display: block;
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.consultation-form button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ===== TOAST NOTIFICATION ===== */
+.toast-notification {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    min-width: 350px;
+    max-width: 450px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 10000;
+    overflow: hidden;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-icon {
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast-icon i {
+    font-size: 1.5rem;
+}
+
+.toast-success .toast-icon {
+    background: rgba(76, 175, 80, 0.15);
+}
+
+.toast-success .toast-icon i {
+    color: #4caf50;
+}
+
+.toast-error .toast-icon {
+    background: rgba(244, 67, 54, 0.15);
+}
+
+.toast-error .toast-icon i {
+    color: #f44336;
+}
+
+.toast-info .toast-icon {
+    background: rgba(33, 150, 243, 0.15);
+}
+
+.toast-info .toast-icon i {
+    color: #2196f3;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.toast-message {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.toast-close {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    border-radius: 0 0 12px 12px;
+}
+
+.toast-success .toast-progress {
+    background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+.toast-error .toast-progress {
+    background: linear-gradient(90deg, #f44336, #e57373);
+}
+
+.toast-info .toast-progress {
+    background: linear-gradient(90deg, #2196f3, #64b5f6);
+}
+
+@keyframes toastProgress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
 }
 
 /* ===== CONTACT SECTION ===== */

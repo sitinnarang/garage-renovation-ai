@@ -2,10 +2,32 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// SQLite Database Setup
+const DB_PATH = path.join(__dirname, 'garage_consultations.db');
+const db = new sqlite3.Database(DB_PATH);
+
+// Create consultations table
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS consultations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT,
+            service TEXT,
+            message TEXT,
+            submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            status TEXT DEFAULT 'new'
+        )
+    `);
+    console.log('SQLite database initialized');
+});
 
 // GitHub Models API Configuration
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -502,6 +524,74 @@ function generateDemoResponse(style, budget, priority) {
         suggestions: extractSuggestions('', style || 'modern', priority || 'functionality')
     };
 }
+
+// ==================== Consultation Form API ====================
+
+// Submit consultation form
+app.post('/api/consultation', (req, res) => {
+    const { name, email, phone, service, message } = req.body;
+    
+    // Validate required fields
+    if (!name || !email) {
+        return res.status(400).json({ error: 'Name and email are required' });
+    }
+    
+    // Insert into SQLite database
+    const sql = `INSERT INTO consultations (name, email, phone, service, message) VALUES (?, ?, ?, ?, ?)`;
+    
+    db.run(sql, [name, email, phone || '', service || '', message || ''], function(err) {
+        if (err) {
+            console.error('Error saving consultation:', err);
+            return res.status(500).json({ error: 'Failed to save consultation' });
+        }
+        
+        console.log(`New consultation received from ${name} (${email}) - ID: ${this.lastID}`);
+        
+        res.json({ 
+            success: true, 
+            message: 'Thank you! We will contact you soon.',
+            id: this.lastID 
+        });
+    });
+});
+
+// Get all consultations (admin endpoint)
+app.get('/api/consultations', (req, res) => {
+    const sql = `SELECT * FROM consultations ORDER BY submitted_at DESC`;
+    
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error('Error reading consultations:', err);
+            return res.status(500).json({ error: 'Failed to read consultations' });
+        }
+        res.json(rows);
+    });
+});
+
+// Delete a consultation
+app.delete('/api/consultation/:id', (req, res) => {
+    const { id } = req.params;
+    
+    db.run(`DELETE FROM consultations WHERE id = ?`, [id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to delete' });
+        }
+        res.json({ success: true, deleted: this.changes });
+    });
+});
+
+// Update consultation status
+app.patch('/api/consultation/:id', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    db.run(`UPDATE consultations SET status = ? WHERE id = ?`, [status, id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to update' });
+        }
+        res.json({ success: true, updated: this.changes });
+    });
+});
 
 // ==================== Start Server ====================
 
