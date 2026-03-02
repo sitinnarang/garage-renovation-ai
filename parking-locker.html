@@ -3,40 +3,651 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Parking Locker™ | Garage Parking Storage | Garage Living</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="slatwall.css">
-    <link rel="stylesheet" href="parking-locker.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>The Parking Locker™ | Garage Parking Storage | Garage Transformations</title>
+    <link rel="stylesheet" href="dark-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,it,pt,zh-CN,ja,ko,ar,hi,ru',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        /* Hide ALL Google Translate UI elements */
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0 !important; }
+        .skiptranslate { display: none !important; }
+        #google_translate_element { display: none !important; }
+        .goog-te-gadget { display: none !important; }
+        .goog-te-spinner-pos { display: none !important; }
+        .goog-logo-link { display: none !important; }
+        .goog-te-balloon-frame { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        .goog-te-balloon { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+        iframe.goog-te-menu-frame { display: none !important; }
+        div#goog-gt- { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-ZVi9od-l4eHX-hSRGPd { display: none !important; }
+        
+        /* Product page specific styles */
+        .product-hero {
+            position: relative;
+            padding: 180px 0 100px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            overflow: hidden;
+        }
+        
+        .product-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--gold);
+        }
+        
+        .breadcrumb i {
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+        
+        .breadcrumb span {
+            color: var(--gold);
+        }
+        
+        .product-badge {
+            display: inline-block;
+            background: var(--gold-gradient);
+            color: var(--bg-primary);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .product-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .product-tagline {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+        }
+        
+        .product-tagline span {
+            color: var(--gold);
+            font-style: italic;
+        }
+        
+        /* Product Intro Section */
+        .product-intro {
+            padding: 100px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .locker-intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .intro-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        
+        .intro-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .intro-features {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .intro-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .intro-feature i {
+            color: var(--gold);
+            font-size: 1.2rem;
+            width: 24px;
+        }
+        
+        .intro-image {
+            position: relative;
+        }
+        
+        .locker-img-placeholder {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .locker-img-placeholder i {
+            font-size: 5rem;
+            color: var(--gold);
+            opacity: 0.5;
+        }
+        
+        /* Features Visual Section */
+        .locker-features-visual {
+            padding: 100px 0;
+            background: var(--bg-primary);
+        }
+        
+        .features-showcase {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 30px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 168, 85, 0.15);
+        }
+        
+        .feature-visual {
+            width: 70px;
+            height: 70px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .feature-visual i {
+            font-size: 1.8rem;
+            color: var(--bg-primary);
+        }
+        
+        .feature-item h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        /* Specifications Section */
+        .locker-specs {
+            padding: 100px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .specs-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        
+        .specs-img-placeholder {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            border-radius: 20px;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .specs-img-placeholder i {
+            font-size: 4rem;
+            color: var(--gold);
+            opacity: 0.5;
+        }
+        
+        .dimension-labels {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: center;
+        }
+        
+        .dimension-labels span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .specs-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+        }
+        
+        .specs-table {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .spec-row {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .spec-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .spec-label i {
+            color: var(--gold);
+        }
+        
+        .spec-value p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+        
+        .spec-value p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Use Cases Section */
+        .use-cases {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        }
+        
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .use-case-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .use-case-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 168, 85, 0.15);
+        }
+        
+        .use-case-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .use-case-icon i {
+            font-size: 1.8rem;
+            color: var(--bg-primary);
+        }
+        
+        .use-case-card h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .use-case-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Benefits Section */
+        .locker-benefits {
+            padding: 100px 0;
+            background: var(--bg-primary);
+        }
+        
+        .benefits-layout {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        
+        .benefit-block {
+            text-align: center;
+            padding: 40px 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-block:hover {
+            border-color: var(--gold);
+            box-shadow: 0 20px 50px rgba(212, 168, 85, 0.15);
+        }
+        
+        .benefit-icon-large {
+            width: 90px;
+            height: 90px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+        
+        .benefit-icon-large i {
+            font-size: 2.5rem;
+            color: var(--bg-primary);
+        }
+        
+        .benefit-block h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .benefit-block p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .faq-grid {
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+        
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            border-color: var(--gold);
+        }
+        
+        .faq-question {
+            width: 100%;
+            padding: 20px 25px;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        .faq-question i {
+            color: var(--gold);
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+        
+        .faq-answer p {
+            padding: 0 25px 20px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        /* Brochure Section */
+        .brochure-section {
+            padding: 100px 0;
+            background: var(--bg-primary);
+        }
+        
+        .brochure-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .brochure-image {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border-radius: 20px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .brochure-image i {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .brochure-image span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        .brochure-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .brochure-content p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        /* Product CTA Section */
+        .product-cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            text-align: center;
+        }
+        
+        .cta-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .cta-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .btn-large {
+            padding: 18px 40px;
+            font-size: 1rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gold);
+            color: var(--bg-primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .features-showcase {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .use-cases-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .benefits-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .locker-intro-grid,
+            .specs-layout,
+            .brochure-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .features-showcase {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .use-cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="top-bar-content">
-            <div class="top-bar-left">
-                <span><i class="fas fa-phone"></i> 1-866-465-4278</span>
-                <span><i class="fas fa-clock"></i> Mon-Fri 8am-6pm</span>
-            </div>
-            <div class="top-bar-right">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-pinterest"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-    </div>
-
+<body class="dark-theme">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-brand">
+            <a href="index.html" class="nav-brand notranslate" translate="no">
                 <div class="logo-icon">
                     <i class="fas fa-warehouse"></i>
                 </div>
                 <div class="brand-text">
                     <span class="brand-name">GARAGE</span>
-                    <span class="brand-tagline">LIVING</span>
+                    <span class="brand-tagline">TRANSFORMATIONS</span>
                 </div>
             </a>
             <ul class="nav-links">
@@ -48,35 +659,54 @@
                         <a href="slatwall.html">Slatwall Panels</a>
                         <a href="linea.html">LINEA Accessories</a>
                         <a href="parking-locker.html" class="active">Parking Locker</a>
-                        <a href="index.html#lighting">Lighting Solutions</a>
                     </div>
                 </li>
                 <li><a href="index.html#gallery">Gallery</a></li>
-                <li><a href="index.html#process">Process</a></li>
-                <li><a href="index.html#testimonials">Reviews</a></li>
-                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#ar-view"><i class="fas fa-cube"></i> AR View</a></li>
+                <li><a href="index.html#ai-features"><i class="fas fa-robot"></i> AI Tools</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
             </ul>
-            <a href="index.html#consultation" class="btn btn-primary nav-cta">Free Consultation</a>
+            <a href="index.html#consultation" class="btn btn-gold nav-cta">Get Free Design</a>
+            <div class="language-selector notranslate" translate="no">
+                <button class="language-btn" id="languageBtn" title="Select Language">
+                    <i class="fas fa-globe"></i>
+                    <span class="lang-text">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown notranslate" id="languageDropdown" translate="no">
+                    <a href="#" data-lang="en" class="lang-option active"><span class="flag">🇺🇸</span> English</a>
+                    <a href="#" data-lang="es" class="lang-option"><span class="flag">🇪🇸</span> Español</a>
+                    <a href="#" data-lang="fr" class="lang-option"><span class="flag">🇫🇷</span> Français</a>
+                    <a href="#" data-lang="de" class="lang-option"><span class="flag">🇩🇪</span> Deutsch</a>
+                    <a href="#" data-lang="it" class="lang-option"><span class="flag">🇮🇹</span> Italiano</a>
+                    <a href="#" data-lang="pt" class="lang-option"><span class="flag">🇵🇹</span> Português</a>
+                    <a href="#" data-lang="zh" class="lang-option"><span class="flag">🇨🇳</span> 中文</a>
+                    <a href="#" data-lang="ja" class="lang-option"><span class="flag">🇯🇵</span> 日本語</a>
+                    <a href="#" data-lang="ko" class="lang-option"><span class="flag">🇰🇷</span> 한국어</a>
+                    <a href="#" data-lang="ar" class="lang-option"><span class="flag">🇸🇦</span> العربية</a>
+                    <a href="#" data-lang="hi" class="lang-option"><span class="flag">🇮🇳</span> हिन्दी</a>
+                    <a href="#" data-lang="ru" class="lang-option"><span class="flag">🇷🇺</span> Русский</a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </button>
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
+    
+    <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element"></div>
 
     <!-- Product Hero -->
-    <section class="product-hero locker-hero">
-        <div class="locker-hero-bg"></div>
+    <section class="product-hero">
         <div class="container">
             <div class="product-hero-content">
-                <nav class="breadcrumb">
-                    <a href="index.html">Home</a>
-                    <i class="fas fa-chevron-right"></i>
-                    <a href="#">Products</a>
-                    <i class="fas fa-chevron-right"></i>
-                    <span>Parking Locker</span>
-                </nav>
-                <span class="product-badge locker-badge">Parking Storage Solution</span>
+                <span class="product-badge">Parking Storage Solution</span>
                 <h1>The Parking Locker™</h1>
                 <p class="product-tagline">Optimize your <span>parking spot</span></p>
             </div>
@@ -105,7 +735,7 @@
                             <span>1000 lbs capacity</span>
                         </div>
                     </div>
-                    <a href="index.html#consultation" class="btn btn-primary">Get Free Estimate</a>
+                    <a href="index.html#consultation" class="btn btn-gold">Get Free Estimate</a>
                 </div>
                 <div class="intro-image">
                     <div class="locker-img-placeholder">
@@ -426,20 +1056,20 @@
                     <span class="section-badge">Free Download</span>
                     <h2>Parking Locker Brochure</h2>
                     <p>Download a copy of our Parking Locker brochure for complete product details, specifications, and installation information.</p>
-                    <a href="#" class="btn btn-primary"><i class="fas fa-download"></i> Download Now</a>
+                    <a href="#" class="btn btn-gold"><i class="fas fa-download"></i> Download Now</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="product-cta locker-cta">
+    <section class="product-cta">
         <div class="container">
             <div class="cta-content">
                 <h2>Ready to Optimize Your Parking Space?</h2>
                 <p>Schedule a free consultation and learn how The Parking Locker™ can transform your condo garage storage.</p>
                 <div class="cta-buttons">
-                    <a href="index.html#consultation" class="btn btn-primary btn-large">Request Free Consultation</a>
+                    <a href="index.html#consultation" class="btn btn-gold btn-large">Request Free Consultation</a>
                     <a href="tel:1-866-465-4278" class="btn btn-outline btn-large"><i class="fas fa-phone"></i> 1-866-465-4278</a>
                 </div>
             </div>
@@ -449,62 +1079,115 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <i class="fas fa-warehouse"></i>
-                        <div>
-                            <span class="brand-name">GARAGE</span>
-                            <span class="brand-tagline">LIVING</span>
-                        </div>
-                    </div>
-                    <p>North America's leader in premium garage makeovers. Transforming garages into beautiful, functional spaces since 2005.</p>
-                    <div class="footer-social">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-pinterest"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-houzz"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Products</h4>
-                    <a href="index.html#flooring">Garage Flooring</a>
-                    <a href="index.html#cabinets">Custom Cabinets</a>
-                    <a href="slatwall.html">Slatwall Panels</a>
-                    <a href="linea.html">LINEA Accessories</a>
-                    <a href="parking-locker.html">Parking Locker</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <a href="index.html#about">About Us</a>
-                    <a href="index.html#gallery">Gallery</a>
-                    <a href="index.html#testimonials">Reviews</a>
-                    <a href="#">Careers</a>
-                    <a href="#">Blog</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Support</h4>
-                    <a href="#">FAQ</a>
-                    <a href="#">Warranty Info</a>
-                    <a href="#">Care & Maintenance</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Garage Living. All rights reserved.</p>
+            <div class="footer-content">
+                <p>&copy; 2026 Garage Transformations. All rights reserved.</p>
                 <div class="footer-badges">
-                    <span><i class="fas fa-shield-halved"></i> Lifetime Warranty</span>
-                    <span><i class="fas fa-award"></i> BBB A+ Rated</span>
-                    <span><i class="fas fa-leaf"></i> Eco-Friendly Products</span>
+                    <span><i class="fas fa-shield-halved"></i> 5-Year Warranty</span>
+                    <span><i class="fas fa-award"></i> Premium Quality</span>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
     <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('garageTheme') || 'dark';
+        body.classList.toggle('dark-theme', savedTheme === 'dark');
+        body.classList.toggle('light-theme', savedTheme === 'light');
+        
+        themeToggle?.addEventListener('click', () => {
+            const isDark = body.classList.contains('dark-theme');
+            body.classList.toggle('dark-theme', !isDark);
+            body.classList.toggle('light-theme', isDark);
+            localStorage.setItem('garageTheme', isDark ? 'light' : 'dark');
+        });
+        
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn?.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+        
+        // Language Selector
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const langOptions = document.querySelectorAll('.lang-option');
+        
+        const langCodes = {
+            'en': 'EN', 'es': 'ES', 'fr': 'FR', 'de': 'DE',
+            'it': 'IT', 'pt': 'PT', 'zh': '中文', 'ja': '日本',
+            'ko': '한국', 'ar': 'عر', 'hi': 'हि', 'ru': 'РУ'
+        };
+        
+        const googleLangCodes = {
+            'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de',
+            'it': 'it', 'pt': 'pt', 'zh': 'zh-CN', 'ja': 'ja',
+            'ko': 'ko', 'ar': 'ar', 'hi': 'hi', 'ru': 'ru'
+        };
+        
+        languageBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', () => {
+            languageDropdown?.classList.remove('show');
+        });
+        
+        function setLanguage(lang) {
+            // Update button text
+            const langText = languageBtn?.querySelector('.lang-text');
+            if (langText) langText.textContent = langCodes[lang] || lang.toUpperCase();
+            
+            // Update active state
+            langOptions.forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            
+            // Save preference
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Trigger Google Translate
+            const googleLang = googleLangCodes[lang] || 'en';
+            document.cookie = `googtrans=/en/${googleLang}; path=/`;
+            document.cookie = `googtrans=/en/${googleLang}; path=/; domain=${window.location.hostname}`;
+            
+            if (lang === 'en') {
+                // Reset to English
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+            }
+            
+            // Reload to apply translation
+            if (location.pathname.includes('parking-locker.html')) {
+                location.reload();
+            }
+        }
+        
+        langOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setLanguage(option.dataset.lang);
+                languageDropdown?.classList.remove('show');
+            });
+        });
+        
+        // Load saved language preference
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        const langText = languageBtn?.querySelector('.lang-text');
+        if (langText) langText.textContent = langCodes[savedLang] || 'EN';
+        langOptions.forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.lang === savedLang);
+        });
+        
         // FAQ Accordion
         document.querySelectorAll('.faq-question').forEach(button => {
             button.addEventListener('click', () => {
@@ -517,6 +1200,20 @@
                 
                 if (!isOpen) {
                     faqItem.classList.add('active');
+                }
+            });
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             });
         });

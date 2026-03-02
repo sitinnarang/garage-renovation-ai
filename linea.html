@@ -3,40 +3,542 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINEA Accessories | Premium Slatwall Accessories | Garage Living</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="slatwall.css">
-    <link rel="stylesheet" href="linea.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>LINEA Accessories | Premium Slatwall Accessories | Garage Transformations</title>
+    <link rel="stylesheet" href="dark-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,it,pt,zh-CN,ja,ko,ar,hi,ru',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        /* Hide ALL Google Translate UI elements */
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0 !important; }
+        .skiptranslate { display: none !important; }
+        #google_translate_element { display: none !important; }
+        .goog-te-gadget { display: none !important; }
+        .goog-te-spinner-pos { display: none !important; }
+        .goog-logo-link { display: none !important; }
+        .goog-te-balloon-frame { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        .goog-te-balloon { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+        iframe.goog-te-menu-frame { display: none !important; }
+        div#goog-gt- { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-ZVi9od-l4eHX-hSRGPd { display: none !important; }
+        
+        /* Product page specific styles */
+        .product-hero {
+            position: relative;
+            padding: 180px 0 100px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            overflow: hidden;
+        }
+        
+        .product-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--gold);
+        }
+        
+        .breadcrumb i {
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+        
+        .breadcrumb span {
+            color: var(--gold);
+        }
+        
+        .product-badge {
+            display: inline-block;
+            background: var(--gold-gradient);
+            color: var(--bg-primary);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .product-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .product-tagline {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+        }
+        
+        .product-tagline span {
+            color: var(--gold);
+            font-style: italic;
+        }
+        
+        /* Product Intro Section */
+        .product-intro {
+            padding: 100px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .linea-intro {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            text-align: center;
+        }
+        
+        .linea-intro-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        .linea-features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .linea-feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .linea-feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 168, 85, 0.15);
+        }
+        
+        .linea-feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .linea-feature-icon i {
+            font-size: 2rem;
+            color: var(--bg-primary);
+        }
+        
+        .linea-feature-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .linea-feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Benefits Section */
+        .linea-benefits {
+            padding: 100px 0;
+            background: var(--bg-primary);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .benefit-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 168, 85, 0.15);
+        }
+        
+        .benefit-icon-box {
+            width: 70px;
+            height: 70px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .benefit-icon-box i {
+            font-size: 1.8rem;
+            color: var(--bg-primary);
+        }
+        
+        .benefit-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .benefit-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        /* Products Section */
+        .products-section {
+            padding: 100px 0;
+        }
+        
+        .hooks-section {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        }
+        
+        .holders-section {
+            background: var(--bg-secondary);
+        }
+        
+        .shelves-section {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .holders-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+        
+        .large-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 168, 85, 0.15);
+        }
+        
+        .product-card.featured {
+            grid-column: span 2;
+        }
+        
+        .product-image {
+            width: 60px;
+            height: 60px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .product-image i {
+            font-size: 1.4rem;
+            color: var(--bg-primary);
+        }
+        
+        .product-card h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        .products-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 40px;
+        }
+        
+        .products-note i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        
+        /* Compatibility Section */
+        .compatibility-section {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .compatibility-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 50px;
+        }
+        
+        .compatibility-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .compatibility-icon i {
+            font-size: 2.5rem;
+            color: var(--bg-primary);
+        }
+        
+        .compatibility-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .compatibility-text p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .compatibility-text a:not(.btn) {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        .compatibility-text a:not(.btn):hover {
+            text-decoration: underline;
+        }
+        
+        /* Brochure Section */
+        .brochure-section {
+            padding: 100px 0;
+            background: var(--bg-primary);
+        }
+        
+        .brochure-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .brochure-image {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border-radius: 20px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .brochure-image i {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .brochure-image span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .brochure-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .brochure-content p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        /* Product CTA Section */
+        .product-cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            text-align: center;
+        }
+        
+        .cta-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .cta-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .btn-large {
+            padding: 18px 40px;
+            font-size: 1rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gold);
+            color: var(--bg-primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .linea-features-grid,
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .products-grid,
+            .holders-grid,
+            .large-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .product-card.featured {
+                grid-column: span 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .linea-features-grid,
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid,
+            .holders-grid,
+            .large-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .brochure-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .compatibility-content {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px 30px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="top-bar-content">
-            <div class="top-bar-left">
-                <span><i class="fas fa-phone"></i> 1-866-465-4278</span>
-                <span><i class="fas fa-clock"></i> Mon-Fri 8am-6pm</span>
-            </div>
-            <div class="top-bar-right">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-pinterest"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-    </div>
-
+<body class="dark-theme">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-brand">
+            <a href="index.html" class="nav-brand notranslate" translate="no">
                 <div class="logo-icon">
                     <i class="fas fa-warehouse"></i>
                 </div>
                 <div class="brand-text">
                     <span class="brand-name">GARAGE</span>
-                    <span class="brand-tagline">LIVING</span>
+                    <span class="brand-tagline">TRANSFORMATIONS</span>
                 </div>
             </a>
             <ul class="nav-links">
@@ -51,31 +553,51 @@
                     </div>
                 </li>
                 <li><a href="index.html#gallery">Gallery</a></li>
-                <li><a href="index.html#process">Process</a></li>
-                <li><a href="index.html#testimonials">Reviews</a></li>
-                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#ar-view"><i class="fas fa-cube"></i> AR View</a></li>
+                <li><a href="index.html#ai-features"><i class="fas fa-robot"></i> AI Tools</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
             </ul>
-            <a href="index.html#consultation" class="btn btn-primary nav-cta">Free Consultation</a>
+            <a href="index.html#consultation" class="btn btn-gold nav-cta">Get Free Design</a>
+            <div class="language-selector notranslate" translate="no">
+                <button class="language-btn" id="languageBtn" title="Select Language">
+                    <i class="fas fa-globe"></i>
+                    <span class="lang-text">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown notranslate" id="languageDropdown" translate="no">
+                    <a href="#" data-lang="en" class="lang-option active"><span class="flag">🇺🇸</span> English</a>
+                    <a href="#" data-lang="es" class="lang-option"><span class="flag">🇪🇸</span> Español</a>
+                    <a href="#" data-lang="fr" class="lang-option"><span class="flag">🇫🇷</span> Français</a>
+                    <a href="#" data-lang="de" class="lang-option"><span class="flag">🇩🇪</span> Deutsch</a>
+                    <a href="#" data-lang="it" class="lang-option"><span class="flag">🇮🇹</span> Italiano</a>
+                    <a href="#" data-lang="pt" class="lang-option"><span class="flag">🇵🇹</span> Português</a>
+                    <a href="#" data-lang="zh" class="lang-option"><span class="flag">🇨🇳</span> 中文</a>
+                    <a href="#" data-lang="ja" class="lang-option"><span class="flag">🇯🇵</span> 日本語</a>
+                    <a href="#" data-lang="ko" class="lang-option"><span class="flag">🇰🇷</span> 한국어</a>
+                    <a href="#" data-lang="ar" class="lang-option"><span class="flag">🇸🇦</span> العربية</a>
+                    <a href="#" data-lang="hi" class="lang-option"><span class="flag">🇮🇳</span> हिन्दी</a>
+                    <a href="#" data-lang="ru" class="lang-option"><span class="flag">🇷🇺</span> Русский</a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </button>
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
+    
+    <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element"></div>
 
     <!-- Product Hero -->
-    <section class="product-hero linea-hero">
-        <div class="linea-hero-bg"></div>
+    <section class="product-hero">
         <div class="container">
             <div class="product-hero-content">
-                <nav class="breadcrumb">
-                    <a href="index.html">Home</a>
-                    <i class="fas fa-chevron-right"></i>
-                    <a href="#">Products</a>
-                    <i class="fas fa-chevron-right"></i>
-                    <span>LINEA Accessories</span>
-                </nav>
-                <span class="product-badge linea-badge">Exclusive Collection</span>
+                <span class="product-badge">Exclusive Collection</span>
                 <h1>LINEA Accessories</h1>
                 <p class="product-tagline">Exclusive Garage <span>Slatwall Accessories</span></p>
             </div>
@@ -429,7 +951,7 @@
                 <div class="compatibility-text">
                     <h3>Perfect Fit With Slatwall</h3>
                     <p>LINEA accessories are designed to work seamlessly with our <a href="slatwall.html">Slatwall Panel System</a>. All 8 slatwall colors complement the LINEA grey granite finish for a cohesive, professional look.</p>
-                    <a href="slatwall.html" class="btn btn-primary">View Slatwall Panels</a>
+                    <a href="slatwall.html" class="btn btn-gold">View Slatwall Panels</a>
                 </div>
             </div>
         </div>
@@ -449,7 +971,7 @@
                     <span class="section-badge">Free Download</span>
                     <h2>LINEA Accessories Brochure</h2>
                     <p>Download a copy of our LINEA accessories brochure for complete product details, specifications, and styling inspiration.</p>
-                    <a href="#" class="btn btn-primary"><i class="fas fa-download"></i> Download Now</a>
+                    <a href="#" class="btn btn-gold"><i class="fas fa-download"></i> Download Now</a>
                 </div>
             </div>
         </div>
@@ -462,7 +984,7 @@
                 <h2>Ready to Organize Your Garage?</h2>
                 <p>Schedule a free design consultation and see how LINEA accessories can transform your garage storage.</p>
                 <div class="cta-buttons">
-                    <a href="index.html#consultation" class="btn btn-primary btn-large">Request Free Consultation</a>
+                    <a href="index.html#consultation" class="btn btn-gold btn-large">Request Free Consultation</a>
                     <a href="tel:1-866-465-4278" class="btn btn-outline btn-large"><i class="fas fa-phone"></i> 1-866-465-4278</a>
                 </div>
             </div>
@@ -472,60 +994,128 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <i class="fas fa-warehouse"></i>
-                        <div>
-                            <span class="brand-name">GARAGE</span>
-                            <span class="brand-tagline">LIVING</span>
-                        </div>
-                    </div>
-                    <p>North America's leader in premium garage makeovers. Transforming garages into beautiful, functional spaces since 2005.</p>
-                    <div class="footer-social">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-pinterest"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-houzz"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Products</h4>
-                    <a href="index.html#flooring">Garage Flooring</a>
-                    <a href="index.html#cabinets">Custom Cabinets</a>
-                    <a href="slatwall.html">Slatwall Panels</a>
-                    <a href="linea.html">LINEA Accessories</a>
-                    <a href="parking-locker.html">Parking Locker</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <a href="index.html#about">About Us</a>
-                    <a href="index.html#gallery">Gallery</a>
-                    <a href="index.html#testimonials">Reviews</a>
-                    <a href="#">Careers</a>
-                    <a href="#">Blog</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Support</h4>
-                    <a href="#">FAQ</a>
-                    <a href="#">Warranty Info</a>
-                    <a href="#">Care & Maintenance</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Garage Living. All rights reserved.</p>
+            <div class="footer-content">
+                <p>&copy; 2026 Garage Transformations. All rights reserved.</p>
                 <div class="footer-badges">
-                    <span><i class="fas fa-shield-halved"></i> Lifetime Warranty</span>
-                    <span><i class="fas fa-award"></i> BBB A+ Rated</span>
-                    <span><i class="fas fa-leaf"></i> Eco-Friendly Products</span>
+                    <span><i class="fas fa-shield-halved"></i> 5-Year Warranty</span>
+                    <span><i class="fas fa-award"></i> Premium Quality</span>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('garageTheme') || 'dark';
+        body.classList.toggle('dark-theme', savedTheme === 'dark');
+        body.classList.toggle('light-theme', savedTheme === 'light');
+        
+        themeToggle?.addEventListener('click', () => {
+            const isDark = body.classList.contains('dark-theme');
+            body.classList.toggle('dark-theme', !isDark);
+            body.classList.toggle('light-theme', isDark);
+            localStorage.setItem('garageTheme', isDark ? 'light' : 'dark');
+        });
+        
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn?.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+        
+        // Language Selector
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const langOptions = document.querySelectorAll('.lang-option');
+        
+        const langCodes = {
+            'en': 'EN', 'es': 'ES', 'fr': 'FR', 'de': 'DE',
+            'it': 'IT', 'pt': 'PT', 'zh': '中文', 'ja': '日本',
+            'ko': '한국', 'ar': 'عر', 'hi': 'हि', 'ru': 'РУ'
+        };
+        
+        const googleLangCodes = {
+            'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de',
+            'it': 'it', 'pt': 'pt', 'zh': 'zh-CN', 'ja': 'ja',
+            'ko': 'ko', 'ar': 'ar', 'hi': 'hi', 'ru': 'ru'
+        };
+        
+        languageBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', () => {
+            languageDropdown?.classList.remove('show');
+        });
+        
+        function setLanguage(lang) {
+            // Update button text
+            const langText = languageBtn?.querySelector('.lang-text');
+            if (langText) langText.textContent = langCodes[lang] || lang.toUpperCase();
+            
+            // Update active state
+            langOptions.forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            
+            // Save preference
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Trigger Google Translate
+            const googleLang = googleLangCodes[lang] || 'en';
+            document.cookie = `googtrans=/en/${googleLang}; path=/`;
+            document.cookie = `googtrans=/en/${googleLang}; path=/; domain=${window.location.hostname}`;
+            
+            if (lang === 'en') {
+                // Reset to English
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+            }
+            
+            // Reload to apply translation
+            if (location.pathname.includes('linea.html')) {
+                location.reload();
+            }
+        }
+        
+        langOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setLanguage(option.dataset.lang);
+                languageDropdown?.classList.remove('show');
+            });
+        });
+        
+        // Load saved language preference
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        const langText = languageBtn?.querySelector('.lang-text');
+        if (langText) langText.textContent = langCodes[savedLang] || 'EN';
+        langOptions.forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.lang === savedLang);
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
