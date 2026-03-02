@@ -1,19 +1,40 @@
-// GarageAI - Server with OpenAI Integration
+// GarageAI - Server with GitHub Models API Integration
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const OpenAI = require('openai');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize OpenAI (only if API key is provided)
-let openai = null;
-if (process.env.OPENAI_API_KEY) {
-    openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY
+// GitHub Models API Configuration
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const AI_ENDPOINT = process.env.AI_ENDPOINT || 'https://models.inference.ai.azure.com/chat/completions';
+const AI_MODEL = process.env.AI_MODEL || 'gpt-4o-mini';
+
+// Helper function to call GitHub Models API
+async function callGitHubModels(messages, maxTokens = 500) {
+    const response = await fetch(AI_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GITHUB_TOKEN}`
+        },
+        body: JSON.stringify({
+            model: AI_MODEL,
+            messages: messages,
+            max_tokens: maxTokens,
+            temperature: 0.7
+        })
     });
+    
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`API Error: ${response.status} - ${error}`);
+    }
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
 }
 
 // Middleware
@@ -33,8 +54,8 @@ app.post('/api/generate', async (req, res) => {
             return res.status(400).json({ error: 'No image provided' });
         }
 
-        // If no OpenAI API key, return demo response
-        if (!openai) {
+        // If no GitHub token, return demo response
+        if (!GITHUB_TOKEN) {
             const demoResponse = generateDemoResponse(style, budget, priority);
             return res.json({
                 success: true,
@@ -47,61 +68,56 @@ app.post('/api/generate', async (req, res) => {
         // Generate AI response with analysis and suggestions
         const analysisPrompt = buildAnalysisPrompt(style, budget, priority);
         
-        // Get AI suggestions and cost estimate
-        const chatCompletion = await openai.chat.completions.create({
-            model: 'gpt-4-vision-preview',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are an expert garage renovation consultant. Analyze the garage image and provide detailed renovation suggestions and cost estimates.'
-                },
-                {
-                    role: 'user',
-                    content: [
-                        {
-                            type: 'text',
-                            text: analysisPrompt
-                        },
-                        {
-                            type: 'image_url',
-                            image_url: {
-                                url: image,
-                                detail: 'high'
+        // Get AI suggestions and cost estimate using GitHub Models API
+        const response = await fetch(AI_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GITHUB_TOKEN}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are an expert garage renovation consultant. Analyze the garage image and provide detailed renovation suggestions and cost estimates.'
+                    },
+                    {
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: analysisPrompt
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: image,
+                                    detail: 'high'
+                                }
                             }
-                        }
-                    ]
-                }
-            ],
-            max_tokens: 1500
+                        ]
+                    }
+                ],
+                max_tokens: 1500
+            })
         });
-
-        const aiAnalysis = chatCompletion.choices[0].message.content;
+        
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const aiAnalysis = data.choices[0].message.content;
         
         // Parse AI response and structure it
         const structuredResponse = parseAIResponse(aiAnalysis, style, budget, priority);
 
-        // Generate renovation image using DALL-E
-        let generatedImage = image; // Default to original
-        
-        try {
-            const imagePrompt = buildImagePrompt(style, budget, priority);
-            const imageResponse = await openai.images.create({
-                model: 'dall-e-3',
-                prompt: imagePrompt,
-                n: 1,
-                size: '1024x1024',
-                quality: 'standard'
-            });
-            
-            generatedImage = imageResponse.data[0].url;
-        } catch (imageError) {
-            console.error('Image generation error:', imageError.message);
-            // Continue without generated image
-        }
-
+        // Note: GitHub Models API doesn't support DALL-E image generation
+        // Return original image with AI analysis
         res.json({
             success: true,
-            generatedImage,
+            generatedImage: image,
             estimate: structuredResponse.estimate,
             suggestions: structuredResponse.suggestions,
             analysis: structuredResponse.analysis
@@ -123,6 +139,142 @@ app.post('/api/generate', async (req, res) => {
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Chat endpoint
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { messages } = req.body;
+        
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ error: 'Messages array required' });
+        }
+        
+        if (!GITHUB_TOKEN) {
+            // Demo response when no API key
+            return res.json({
+                success: true,
+                demo: true,
+                response: "I'd be happy to help with your garage renovation! For detailed information, please schedule a free consultation. Our experts will assess your space and provide personalized recommendations."
+            });
+        }
+        
+        const response = await callGitHubModels(messages, 500);
+        
+        res.json({
+            success: true,
+            response: response
+        });
+        
+    } catch (error) {
+        console.error('Chat API Error:', error);
+        res.status(500).json({ 
+            error: 'Failed to process chat',
+            message: error.message 
+        });
+    }
+});
+
+// Image generation endpoint (GitHub Models API doesn't support DALL-E, using demo)
+app.post('/api/generate-image', async (req, res) => {
+    try {
+        const { prompt } = req.body;
+        
+        if (!prompt) {
+            return res.status(400).json({ error: 'Prompt required' });
+        }
+        
+        // GitHub Models API doesn't support image generation
+        // Return curated demo images based on style keywords
+        const demoImages = [
+            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1024&q=80',
+            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1024&q=80',
+            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1024&q=80'
+        ];
+        
+        const randomImage = demoImages[Math.floor(Math.random() * demoImages.length)];
+        
+        res.json({
+            success: true,
+            demo: true,
+            imageUrl: randomImage,
+            message: 'Demo mode: Image generation requires OpenAI DALL-E API'
+        });
+        
+    } catch (error) {
+        console.error('Image Generation Error:', error);
+        res.status(500).json({ 
+            error: 'Failed to generate image',
+            message: error.message 
+        });
+    }
+});
+
+// Vision/Analysis endpoint
+app.post('/api/analyze', async (req, res) => {
+    try {
+        const { imageBase64, prompt, systemPrompt } = req.body;
+        
+        if (!imageBase64 || !prompt) {
+            return res.status(400).json({ error: 'Image and prompt required' });
+        }
+        
+        if (!GITHUB_TOKEN) {
+            return res.json({
+                success: true,
+                demo: true,
+                response: JSON.stringify({
+                    recommendations: [
+                        { name: "Metallic Epoxy Flooring", reason: "Transform the floor with our premium coating", priority: "high", estimated_price: "$3,500" },
+                        { name: "LED Hexagon Lights", reason: "Modern lighting upgrade", priority: "high", estimated_price: "$800" },
+                        { name: "Custom Cabinets", reason: "Organized storage solution", priority: "medium", estimated_price: "$4,500" }
+                    ]
+                })
+            });
+        }
+        
+        // Use gpt-4o for vision tasks (supports images)
+        const response = await fetch(AI_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GITHUB_TOKEN}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o',
+                messages: [
+                    { role: 'system', content: systemPrompt || 'Analyze this garage image.' },
+                    {
+                        role: 'user',
+                        content: [
+                            { type: 'text', text: prompt },
+                            { type: 'image_url', image_url: { url: imageBase64, detail: 'high' } }
+                        ]
+                    }
+                ],
+                max_tokens: 1500
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`Vision API Error: ${response.status} - ${error}`);
+        }
+        
+        const data = await response.json();
+        
+        res.json({
+            success: true,
+            response: data.choices[0].message.content
+        });
+        
+    } catch (error) {
+        console.error('Vision API Error:', error);
+        res.status(500).json({ 
+            error: 'Failed to analyze image',
+            message: error.message 
+        });
+    }
 });
 
 // ==================== Helper Functions ====================

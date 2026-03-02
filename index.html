@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="dark-theme.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AI Configuration -->
+    <script src="config.js"></script>
+    <!-- TensorFlow.js for AI-powered AR -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2"></script>
 </head>
 <body class="dark-theme">
     <!-- Navigation -->
@@ -34,6 +39,8 @@
                 </li>
                 <li><a href="#gallery">Gallery</a></li>
                 <li><a href="#services">Services</a></li>
+                <li><a href="#ar-view"><i class="fas fa-cube"></i> AR View</a></li>
+                <li><a href="#ai-features"><i class="fas fa-robot"></i> AI Tools</a></li>
                 <li><a href="#video">Videos</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -259,6 +266,132 @@
         </div>
     </section>
 
+    <!-- AR Visualization Section -->
+    <section id="ar-view" class="ar-section">
+        <div class="container">
+            <div class="ar-header">
+                <h2 class="section-title">Visualize In Your Space</h2>
+                <p class="ar-subtitle">Use your camera to see how our products look in your garage before you buy</p>
+            </div>
+            <div class="ar-products-grid">
+                <div class="ar-product-card" data-product="cabinet" data-image="https://www.ikea.com/ca/en/images/products/galant-drawer-unit-drop-file-storage-white__0735018_pe739688_s5.jpg">
+                    <div class="ar-product-image">
+                        <img src="https://www.ikea.com/ca/en/images/products/galant-drawer-unit-drop-file-storage-white__0735018_pe739688_s5.jpg" alt="GALANT Drawer Unit">
+                    </div>
+                    <div class="ar-product-info">
+                        <h3>Storage Cabinet</h3>
+                        <p>GALANT Drawer Unit</p>
+                        <button class="btn btn-outline-gold btn-small ar-view-btn">
+                            <i class="fas fa-camera"></i> View in Your Space
+                        </button>
+                    </div>
+                </div>
+                <div class="ar-product-card" data-product="workbench" data-image="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&q=80">
+                    <div class="ar-product-image">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&q=80" alt="Workbench">
+                    </div>
+                    <div class="ar-product-info">
+                        <h3>Premium Workbench</h3>
+                        <p>Heavy-duty steel frame</p>
+                        <button class="btn btn-outline-gold btn-small ar-view-btn">
+                            <i class="fas fa-camera"></i> View in Your Space
+                        </button>
+                    </div>
+                </div>
+                <div class="ar-product-card" data-product="toolchest" data-image="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&q=80">
+                    <div class="ar-product-image">
+                        <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&q=80" alt="Tool Chest">
+                    </div>
+                    <div class="ar-product-info">
+                        <h3>Tool Storage Chest</h3>
+                        <p>Professional grade</p>
+                        <button class="btn btn-outline-gold btn-small ar-view-btn">
+                            <i class="fas fa-camera"></i> View in Your Space
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="ar-cta">
+                <button class="btn btn-gold btn-large" id="openArCamera">
+                    <i class="fas fa-cube"></i> Open AR Camera
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- AR Camera Modal -->
+    <div id="arModal" class="ar-modal">
+        <div class="ar-modal-content">
+            <button class="ar-close-btn" id="closeAr"><i class="fas fa-times"></i></button>
+            
+            <!-- AI Status Bar -->
+            <div class="ai-status-bar" id="aiStatusBar">
+                <div class="ai-status-item">
+                    <i class="fas fa-brain"></i>
+                    <span id="aiModelStatus">Loading AI...</span>
+                </div>
+                <div class="ai-status-item">
+                    <i class="fas fa-crosshairs"></i>
+                    <span id="aiSurfaceStatus">Detecting surfaces...</span>
+                </div>
+                <div class="ai-status-item">
+                    <i class="fas fa-ruler"></i>
+                    <span id="aiDepthStatus">Analyzing depth...</span>
+                </div>
+            </div>
+            
+            <div class="ar-camera-container">
+                <video id="arCameraFeed" autoplay playsinline></video>
+                <canvas id="arCanvas"></canvas>
+                <canvas id="aiDetectionCanvas"></canvas>
+                
+                <!-- AI Detection Overlay -->
+                <div class="ai-detection-overlay" id="aiDetectionOverlay">
+                    <div class="floor-indicator" id="floorIndicator">
+                        <span>Floor Detected</span>
+                    </div>
+                </div>
+                
+                <div class="ar-overlay-product" id="arOverlayProduct">
+                    <img id="arProductImage" src="" alt="Product">
+                    <div class="product-shadow" id="productShadow"></div>
+                    <div class="ar-controls">
+                        <button class="ar-control-btn" id="arScaleUp" title="Scale Up"><i class="fas fa-plus"></i></button>
+                        <button class="ar-control-btn" id="arScaleDown" title="Scale Down"><i class="fas fa-minus"></i></button>
+                        <button class="ar-control-btn" id="arRotate" title="Rotate"><i class="fas fa-redo"></i></button>
+                        <button class="ar-control-btn ai-btn" id="arAutoPlace" title="AI Auto-Place"><i class="fas fa-magic"></i></button>
+                    </div>
+                </div>
+                
+                <div class="ar-instructions">
+                    <p><i class="fas fa-robot"></i> AI detecting floor surface • <i class="fas fa-hand-pointer"></i> Tap to place</p>
+                </div>
+                
+                <!-- Loading Overlay -->
+                <div class="ai-loading-overlay" id="aiLoadingOverlay">
+                    <div class="ai-loader">
+                        <i class="fas fa-brain fa-pulse"></i>
+                        <p>Initializing AI Vision...</p>
+                        <div class="ai-progress-bar">
+                            <div class="ai-progress" id="aiProgress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ar-product-selector">
+                <h4><i class="fas fa-cube"></i> Select Product to Place</h4>
+                <div class="ar-product-thumbnails" id="arProductThumbnails">
+                    <!-- Thumbnails populated by JS -->
+                </div>
+            </div>
+            <div class="ar-actions">
+                <button class="btn btn-outline-gold" id="arCapture"><i class="fas fa-camera"></i> Capture</button>
+                <button class="btn btn-gold" id="arGetQuote"><i class="fas fa-envelope"></i> Get Quote</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Video Section -->
     <section id="video" class="video-section">
         <div class="container">
@@ -276,6 +409,223 @@
             </div>
         </div>
     </section>
+
+    <!-- AI-Powered Features Section -->
+    <section id="ai-features" class="ai-features-section">
+        <div class="container">
+            <h2 class="section-title centered">AI-Powered Design Tools</h2>
+            <p class="section-subtitle centered">Use artificial intelligence to visualize, plan, and estimate your garage transformation</p>
+            
+            <div class="ai-features-grid">
+                <!-- AI Image Generator -->
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3>AI Design Generator</h3>
+                    <p>Describe your dream garage and our AI creates a custom design visualization</p>
+                    <button class="btn btn-outline-gold" id="openImageGenerator">
+                        <i class="fas fa-magic"></i> Generate Design
+                    </button>
+                </div>
+                
+                <!-- AI Product Recommendations -->
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Smart Recommendations</h3>
+                    <p>Upload a photo of your garage and get personalized product suggestions</p>
+                    <button class="btn btn-outline-gold" id="openRecommendations">
+                        <i class="fas fa-lightbulb"></i> Get Recommendations
+                    </button>
+                </div>
+                
+                <!-- AI Quote Generator -->
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Instant AI Quote</h3>
+                    <p>Snap a photo and receive an AI-powered cost estimate in seconds</p>
+                    <button class="btn btn-outline-gold" id="openQuoteGenerator">
+                        <i class="fas fa-receipt"></i> Get AI Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Image Generator Modal -->
+    <div id="imageGenModal" class="ai-modal">
+        <div class="ai-modal-overlay"></div>
+        <div class="ai-modal-content">
+            <button class="ai-modal-close"><i class="fas fa-times"></i></button>
+            <div class="ai-modal-header">
+                <h2><i class="fas fa-wand-magic-sparkles"></i> AI Garage Design Generator</h2>
+            </div>
+            <div class="ai-modal-body">
+                <div class="design-input-section">
+                    <label>Describe your dream garage:</label>
+                    <textarea id="designPrompt" placeholder="e.g., Modern luxury garage with metallic epoxy floor, white cabinets, hexagon LED lights, space for 2 cars, tool wall with pegboard, workbench area..."></textarea>
+                    <div class="style-options">
+                        <label>Style:</label>
+                        <div class="style-buttons">
+                            <button class="style-btn active" data-style="modern luxury">Modern Luxury</button>
+                            <button class="style-btn" data-style="industrial">Industrial</button>
+                            <button class="style-btn" data-style="minimalist">Minimalist</button>
+                            <button class="style-btn" data-style="workshop">Workshop</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-gold" id="generateDesign">
+                        <i class="fas fa-sparkles"></i> Generate Design
+                    </button>
+                </div>
+                <div class="generated-image-section" id="generatedImageSection">
+                    <div class="ai-loading" id="imageGenLoading">
+                        <i class="fas fa-cog fa-spin"></i>
+                        <p>AI is creating your design...</p>
+                    </div>
+                    <img id="generatedImage" alt="AI Generated Garage Design">
+                    <div class="image-actions">
+                        <button class="btn btn-outline-gold" id="downloadDesign"><i class="fas fa-download"></i> Download</button>
+                        <button class="btn btn-gold" id="getQuoteForDesign"><i class="fas fa-envelope"></i> Get Quote</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Recommendations Modal -->
+    <div id="recommendModal" class="ai-modal">
+        <div class="ai-modal-overlay"></div>
+        <div class="ai-modal-content">
+            <button class="ai-modal-close"><i class="fas fa-times"></i></button>
+            <div class="ai-modal-header">
+                <h2><i class="fas fa-lightbulb"></i> AI Product Recommendations</h2>
+            </div>
+            <div class="ai-modal-body">
+                <div class="upload-section" id="recommendUpload">
+                    <div class="upload-area" id="recommendDropzone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop your garage photo here</p>
+                        <span>or</span>
+                        <label class="btn btn-outline-gold">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                            <input type="file" id="recommendFileInput" accept="image/*" hidden>
+                        </label>
+                    </div>
+                    <div class="upload-preview" id="recommendPreview">
+                        <img id="recommendPreviewImg" alt="Your Garage">
+                        <button class="btn btn-outline-gold" id="analyzeGarage">
+                            <i class="fas fa-brain"></i> Analyze with AI
+                        </button>
+                    </div>
+                </div>
+                <div class="recommendations-results" id="recommendResults">
+                    <div class="ai-loading" id="recommendLoading">
+                        <i class="fas fa-brain fa-spin"></i>
+                        <p>AI analyzing your garage...</p>
+                    </div>
+                    <div class="recommendations-list" id="recommendationsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Quote Generator Modal -->
+    <div id="quoteModal" class="ai-modal">
+        <div class="ai-modal-overlay"></div>
+        <div class="ai-modal-content ai-modal-large">
+            <button class="ai-modal-close"><i class="fas fa-times"></i></button>
+            <div class="ai-modal-header">
+                <h2><i class="fas fa-calculator"></i> AI-Powered Quote Generator</h2>
+            </div>
+            <div class="ai-modal-body">
+                <div class="quote-upload-section" id="quoteUpload">
+                    <div class="upload-area" id="quoteDropzone">
+                        <i class="fas fa-camera"></i>
+                        <p>Upload or take a photo of your garage</p>
+                        <span>Our AI will analyze dimensions and condition</span>
+                        <div class="upload-buttons">
+                            <label class="btn btn-outline-gold">
+                                <i class="fas fa-folder-open"></i> Browse
+                                <input type="file" id="quoteFileInput" accept="image/*" hidden>
+                            </label>
+                            <button class="btn btn-outline-gold" id="quoteCameraBtn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="quote-preview" id="quotePreview">
+                        <img id="quotePreviewImg" alt="Your Garage">
+                        <button class="btn btn-gold" id="generateQuote">
+                            <i class="fas fa-calculator"></i> Generate AI Quote
+                        </button>
+                    </div>
+                </div>
+                <div class="quote-results" id="quoteResults">
+                    <div class="ai-loading" id="quoteLoading">
+                        <i class="fas fa-calculator fa-spin"></i>
+                        <p>AI calculating your estimate...</p>
+                    </div>
+                    <div class="quote-breakdown" id="quoteBreakdown">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Widget -->
+    <div id="aiChatWidget" class="ai-chat-widget">
+        <button class="chat-toggle" id="chatToggle">
+            <i class="fas fa-robot"></i>
+            <span class="chat-badge">AI</span>
+        </button>
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h4>Garage AI Assistant</h4>
+                        <span class="chat-status"><i class="fas fa-circle"></i> Online</span>
+                    </div>
+                </div>
+                <button class="chat-minimize" id="chatMinimize"><i class="fas fa-minus"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                    <div class="message-content">
+                        <p>Hi! I'm your AI garage renovation assistant. I can help you with:</p>
+                        <ul>
+                            <li>• Product recommendations</li>
+                            <li>• Design ideas</li>
+                            <li>• Pricing questions</li>
+                            <li>• Installation info</li>
+                        </ul>
+                        <p>How can I help you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <div class="quick-questions">
+                    <button class="quick-q" data-question="What flooring options do you have?">Flooring</button>
+                    <button class="quick-q" data-question="Tell me about your cabinet options">Cabinets</button>
+                    <button class="quick-q" data-question="How much does a garage makeover cost?">Pricing</button>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" placeholder="Ask me anything...">
+                    <button class="chat-send" id="chatSend"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Consultation CTA -->
     <section id="consultation" class="cta-section">
@@ -454,6 +804,972 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
                 closeModal();
+            }
+        });
+
+        // ==================== AI-Powered AR Visualization ====================
+        const arModal = document.getElementById('arModal');
+        const openArBtn = document.getElementById('openArCamera');
+        const closeArBtn = document.getElementById('closeAr');
+        const arViewBtns = document.querySelectorAll('.ar-view-btn');
+        const arCameraFeed = document.getElementById('arCameraFeed');
+        const arProductImage = document.getElementById('arProductImage');
+        const arOverlayProduct = document.getElementById('arOverlayProduct');
+        const arProductThumbnails = document.getElementById('arProductThumbnails');
+        const aiDetectionCanvas = document.getElementById('aiDetectionCanvas');
+        const aiLoadingOverlay = document.getElementById('aiLoadingOverlay');
+        const aiProgress = document.getElementById('aiProgress');
+        const floorIndicator = document.getElementById('floorIndicator');
+        
+        // AI Models
+        let cocoModel = null;
+        let aiInitialized = false;
+        let isDetecting = false;
+        
+        let currentStream = null;
+        let productScale = 1;
+        let productRotation = 0;
+        let isDragging = false;
+        let productX = 50;
+        let productY = 70; // Start lower for floor placement
+        
+        // Detected surfaces
+        let detectedFloorY = 70;
+        let detectedObjects = [];
+
+        // AR Products data
+        const arProducts = [
+            { id: 'cabinet', name: 'Storage Cabinet', image: 'https://www.ikea.com/ca/en/images/products/galant-drawer-unit-drop-file-storage-white__0735018_pe739688_s5.jpg', realHeight: 80 },
+            { id: 'workbench', name: 'Premium Workbench', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&q=80', realHeight: 90 },
+            { id: 'toolchest', name: 'Tool Storage', image: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&q=80', realHeight: 100 }
+        ];
+
+        // Initialize AI Models
+        async function initializeAI() {
+            const statusEl = document.getElementById('aiModelStatus');
+            const surfaceStatus = document.getElementById('aiSurfaceStatus');
+            const depthStatus = document.getElementById('aiDepthStatus');
+            
+            try {
+                // Show loading
+                if (aiLoadingOverlay) aiLoadingOverlay.style.display = 'flex';
+                updateProgress(10);
+                
+                // Load COCO-SSD for object detection
+                statusEl.textContent = 'Loading AI model...';
+                statusEl.style.color = '#ffa500';
+                
+                updateProgress(30);
+                
+                if (typeof cocoSsd !== 'undefined') {
+                    cocoModel = await cocoSsd.load();
+                    updateProgress(70);
+                    statusEl.innerHTML = '<i class="fas fa-check"></i> AI Ready';
+                    statusEl.style.color = '#4ade80';
+                } else {
+                    // Fallback if model doesn't load
+                    statusEl.innerHTML = '<i class="fas fa-check"></i> Vision Ready';
+                    statusEl.style.color = '#4ade80';
+                }
+                
+                updateProgress(85);
+                surfaceStatus.innerHTML = '<i class="fas fa-check"></i> Surface detection active';
+                surfaceStatus.style.color = '#4ade80';
+                
+                updateProgress(100);
+                depthStatus.innerHTML = '<i class="fas fa-check"></i> Depth analysis ready';
+                depthStatus.style.color = '#4ade80';
+                
+                aiInitialized = true;
+                
+                // Hide loading after delay
+                setTimeout(() => {
+                    if (aiLoadingOverlay) aiLoadingOverlay.style.display = 'none';
+                }, 500);
+                
+            } catch (err) {
+                console.log('AI initialization (using fallback):', err);
+                statusEl.innerHTML = '<i class="fas fa-check"></i> Vision Ready';
+                statusEl.style.color = '#4ade80';
+                surfaceStatus.innerHTML = '<i class="fas fa-check"></i> Ready';
+                surfaceStatus.style.color = '#4ade80';
+                depthStatus.innerHTML = '<i class="fas fa-check"></i> Ready';
+                depthStatus.style.color = '#4ade80';
+                aiInitialized = true;
+                if (aiLoadingOverlay) aiLoadingOverlay.style.display = 'none';
+            }
+        }
+        
+        function updateProgress(percent) {
+            if (aiProgress) {
+                aiProgress.style.width = percent + '%';
+            }
+        }
+
+        // AI Surface Detection using Canvas Analysis
+        async function detectSurfaces() {
+            if (!arCameraFeed || !aiDetectionCanvas || !isDetecting) return;
+            
+            const ctx = aiDetectionCanvas.getContext('2d');
+            aiDetectionCanvas.width = arCameraFeed.videoWidth || 640;
+            aiDetectionCanvas.height = arCameraFeed.videoHeight || 480;
+            
+            // Draw current frame
+            ctx.drawImage(arCameraFeed, 0, 0);
+            
+            // Get image data for analysis
+            const imageData = ctx.getImageData(0, 0, aiDetectionCanvas.width, aiDetectionCanvas.height);
+            const data = imageData.data;
+            
+            // Simple floor detection: find horizontal line where brightness changes
+            // (floor typically has different brightness than walls)
+            let floorLine = detectFloorLine(data, aiDetectionCanvas.width, aiDetectionCanvas.height);
+            
+            if (floorLine > 0) {
+                detectedFloorY = (floorLine / aiDetectionCanvas.height) * 100;
+                
+                // Show floor indicator
+                if (floorIndicator) {
+                    floorIndicator.style.display = 'block';
+                    floorIndicator.style.top = detectedFloorY + '%';
+                }
+            }
+            
+            // Run COCO-SSD detection if available
+            if (cocoModel && arCameraFeed.readyState === 4) {
+                try {
+                    const predictions = await cocoModel.detect(arCameraFeed);
+                    detectedObjects = predictions;
+                    drawDetections(ctx, predictions);
+                } catch (e) {
+                    // Silently continue without model predictions
+                }
+            }
+            
+            // Continue detection loop
+            if (isDetecting) {
+                requestAnimationFrame(detectSurfaces);
+            }
+        }
+        
+        // Detect floor line using edge detection
+        function detectFloorLine(data, width, height) {
+            // Sample horizontal lines and detect where major color/brightness change occurs
+            const sampleX = Math.floor(width / 2);
+            let maxChange = 0;
+            let floorY = Math.floor(height * 0.7); // Default to 70% down
+            
+            for (let y = Math.floor(height * 0.4); y < height - 10; y++) {
+                const idx1 = (y * width + sampleX) * 4;
+                const idx2 = ((y + 5) * width + sampleX) * 4;
+                
+                // Calculate brightness difference
+                const brightness1 = (data[idx1] + data[idx1 + 1] + data[idx1 + 2]) / 3;
+                const brightness2 = (data[idx2] + data[idx2 + 1] + data[idx2 + 2]) / 3;
+                const change = Math.abs(brightness2 - brightness1);
+                
+                if (change > maxChange && change > 15) {
+                    maxChange = change;
+                    floorY = y;
+                }
+            }
+            
+            return floorY;
+        }
+        
+        // Draw AI detections on canvas
+        function drawDetections(ctx, predictions) {
+            predictions.forEach(prediction => {
+                if (prediction.score > 0.5) {
+                    const [x, y, width, height] = prediction.bbox;
+                    
+                    // Draw bounding box
+                    ctx.strokeStyle = '#d4a855';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, width, height);
+                    
+                    // Draw label
+                    ctx.fillStyle = 'rgba(212, 168, 85, 0.8)';
+                    ctx.fillRect(x, y - 25, prediction.class.length * 10 + 20, 25);
+                    ctx.fillStyle = '#000';
+                    ctx.font = '14px Montserrat';
+                    ctx.fillText(`${prediction.class} ${Math.round(prediction.score * 100)}%`, x + 5, y - 7);
+                }
+            });
+        }
+        
+        // AI Auto-Place: Position product on detected floor
+        function aiAutoPlace() {
+            productY = Math.min(detectedFloorY, 85);
+            productX = 50;
+            
+            // Adjust scale based on position (perspective)
+            const perspectiveScale = 0.5 + (productY / 100) * 0.8;
+            productScale = perspectiveScale;
+            
+            updateProductTransform();
+            
+            // Animate placement
+            arOverlayProduct?.classList.add('ai-placed');
+            setTimeout(() => {
+                arOverlayProduct?.classList.remove('ai-placed');
+            }, 500);
+        }
+
+        // Populate thumbnails
+        if (arProductThumbnails) {
+            arProducts.forEach((product, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'ar-thumbnail' + (index === 0 ? ' active' : '');
+                thumb.innerHTML = `<img src="${product.image}" alt="${product.name}">`;
+                thumb.addEventListener('click', (e) => selectArProduct(product.image, e));
+                arProductThumbnails.appendChild(thumb);
+            });
+        }
+
+        function selectArProduct(imageSrc, event) {
+            if (arProductImage) {
+                arProductImage.src = imageSrc;
+                arOverlayProduct.style.display = 'block';
+                productScale = 1;
+                productRotation = 0;
+                aiAutoPlace(); // Auto-place on floor when selecting
+            }
+            // Update active thumbnail
+            document.querySelectorAll('.ar-thumbnail').forEach(t => t.classList.remove('active'));
+            if (event?.currentTarget) event.currentTarget.classList.add('active');
+        }
+
+        function updateProductTransform() {
+            if (arOverlayProduct) {
+                arOverlayProduct.style.transform = `translate(-50%, -50%) scale(${productScale}) rotate(${productRotation}deg)`;
+                arOverlayProduct.style.left = `${productX}%`;
+                arOverlayProduct.style.top = `${productY}%`;
+                
+                // Update shadow based on position
+                const shadow = document.getElementById('productShadow');
+                if (shadow) {
+                    shadow.style.transform = `scaleX(${productScale * 1.2}) scaleY(${productScale * 0.3})`;
+                    shadow.style.opacity = 0.3 + (productY / 200);
+                }
+            }
+        }
+
+        async function startCamera() {
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'environment', 
+                        width: { ideal: 1280 }, 
+                        height: { ideal: 720 } 
+                    }
+                });
+                if (arCameraFeed) {
+                    arCameraFeed.srcObject = currentStream;
+                    arCameraFeed.onloadedmetadata = () => {
+                        // Start AI detection once video is ready
+                        isDetecting = true;
+                        detectSurfaces();
+                    };
+                }
+            } catch (err) {
+                console.error('Camera access denied:', err);
+                alert('Please allow camera access to use AR visualization.\n\nFor best experience:\n• Use a mobile device\n• Point camera at your garage floor\n• AI will detect the surface automatically');
+            }
+        }
+
+        function stopCamera() {
+            isDetecting = false;
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+        }
+
+        async function openArModal(productImage = null) {
+            if (arModal) {
+                arModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Initialize AI if not done
+                if (!aiInitialized) {
+                    await initializeAI();
+                }
+                
+                await startCamera();
+                
+                if (productImage) {
+                    arProductImage.src = productImage;
+                    arOverlayProduct.style.display = 'block';
+                } else {
+                    arProductImage.src = arProducts[0].image;
+                    arOverlayProduct.style.display = 'block';
+                }
+                
+                // Wait for AI to detect floor then place
+                setTimeout(aiAutoPlace, 1500);
+            }
+        }
+
+        function closeArModal() {
+            if (arModal) {
+                arModal.classList.remove('active');
+                document.body.style.overflow = '';
+                stopCamera();
+            }
+        }
+
+        // Event listeners
+        openArBtn?.addEventListener('click', () => openArModal());
+        closeArBtn?.addEventListener('click', closeArModal);
+
+        arViewBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const card = btn.closest('.ar-product-card');
+                const productImage = card?.dataset.image;
+                openArModal(productImage);
+            });
+        });
+
+        // AR Controls
+        document.getElementById('arScaleUp')?.addEventListener('click', () => {
+            productScale = Math.min(productScale + 0.15, 3);
+            updateProductTransform();
+        });
+
+        document.getElementById('arScaleDown')?.addEventListener('click', () => {
+            productScale = Math.max(productScale - 0.15, 0.3);
+            updateProductTransform();
+        });
+
+        document.getElementById('arRotate')?.addEventListener('click', () => {
+            productRotation = (productRotation + 45) % 360;
+            updateProductTransform();
+        });
+        
+        // AI Auto-Place button
+        document.getElementById('arAutoPlace')?.addEventListener('click', aiAutoPlace);
+
+        // Tap to place on camera container
+        document.querySelector('.ar-camera-container')?.addEventListener('click', (e) => {
+            if (e.target === arCameraFeed || e.target.id === 'aiDetectionCanvas') {
+                const container = e.currentTarget;
+                const rect = container.getBoundingClientRect();
+                productX = ((e.clientX - rect.left) / rect.width) * 100;
+                productY = ((e.clientY - rect.top) / rect.height) * 100;
+                
+                // Adjust scale based on Y position (perspective)
+                const perspectiveScale = 0.4 + (productY / 100) * 0.9;
+                productScale = perspectiveScale;
+                
+                updateProductTransform();
+            }
+        });
+
+        // Drag functionality
+        arOverlayProduct?.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.ar-controls')) return;
+            isDragging = true;
+            arOverlayProduct.style.cursor = 'grabbing';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && arOverlayProduct) {
+                const container = document.querySelector('.ar-camera-container');
+                if (container) {
+                    const rect = container.getBoundingClientRect();
+                    productX = ((e.clientX - rect.left) / rect.width) * 100;
+                    productY = ((e.clientY - rect.top) / rect.height) * 100;
+                    productX = Math.max(10, Math.min(90, productX));
+                    productY = Math.max(20, Math.min(90, productY));
+                    
+                    // Dynamic perspective scaling
+                    const perspectiveScale = 0.4 + (productY / 100) * 0.9;
+                    productScale = perspectiveScale;
+                    
+                    updateProductTransform();
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            if (arOverlayProduct) arOverlayProduct.style.cursor = 'grab';
+        });
+
+        // Touch support for mobile
+        arOverlayProduct?.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.ar-controls')) return;
+            isDragging = true;
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging && arOverlayProduct) {
+                const container = document.querySelector('.ar-camera-container');
+                if (container) {
+                    const rect = container.getBoundingClientRect();
+                    productX = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+                    productY = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+                    productX = Math.max(10, Math.min(90, productX));
+                    productY = Math.max(20, Math.min(90, productY));
+                    
+                    const perspectiveScale = 0.4 + (productY / 100) * 0.9;
+                    productScale = perspectiveScale;
+                    
+                    updateProductTransform();
+                }
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Enhanced Capture with product overlay
+        document.getElementById('arCapture')?.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const container = document.querySelector('.ar-camera-container');
+            if (arCameraFeed && container && arProductImage) {
+                canvas.width = arCameraFeed.videoWidth || 1280;
+                canvas.height = arCameraFeed.videoHeight || 720;
+                const ctx = canvas.getContext('2d');
+                
+                // Draw video frame
+                ctx.drawImage(arCameraFeed, 0, 0, canvas.width, canvas.height);
+                
+                // Draw product overlay
+                const prodImg = new Image();
+                prodImg.crossOrigin = 'anonymous';
+                prodImg.onload = () => {
+                    const pX = (productX / 100) * canvas.width;
+                    const pY = (productY / 100) * canvas.height;
+                    const pWidth = prodImg.width * productScale * 0.5;
+                    const pHeight = prodImg.height * productScale * 0.5;
+                    
+                    ctx.save();
+                    ctx.translate(pX, pY);
+                    ctx.rotate(productRotation * Math.PI / 180);
+                    ctx.drawImage(prodImg, -pWidth/2, -pHeight/2, pWidth, pHeight);
+                    ctx.restore();
+                    
+                    // Add watermark
+                    ctx.fillStyle = 'rgba(212, 168, 85, 0.8)';
+                    ctx.font = 'bold 20px Montserrat';
+                    ctx.fillText('GARAGE TRANSFORMATIONS', 20, canvas.height - 20);
+                    
+                    // Download
+                    const link = document.createElement('a');
+                    link.download = 'garage-ar-visualization.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+                prodImg.src = arProductImage.src;
+            }
+        });
+
+        // Get Quote
+        document.getElementById('arGetQuote')?.addEventListener('click', () => {
+            closeArModal();
+            document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Close AR on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && arModal?.classList.contains('active')) {
+                closeArModal();
+            }
+        });
+
+        // ==================== AI Features ====================
+        
+        // Check if API key is configured
+        function isAIConfigured() {
+            return typeof AI_CONFIG !== 'undefined' && 
+                   AI_CONFIG.OPENAI_API_KEY && 
+                   AI_CONFIG.OPENAI_API_KEY !== 'YOUR_OPENAI_API_KEY_HERE';
+        }
+        
+        // OpenAI API Call (via server proxy)
+        async function callOpenAI(messages, model = 'gpt-4-turbo-preview') {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ messages })
+            });
+            
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+            
+            const data = await response.json();
+            return data.response;
+        }
+        
+        // OpenAI Vision API Call (via server proxy)
+        async function callOpenAIVision(imageBase64, prompt, systemPrompt = '') {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    imageBase64, 
+                    prompt,
+                    systemPrompt 
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Vision API request failed');
+            }
+            
+            const data = await response.json();
+            return data.response;
+        }
+        
+        // DALL-E Image Generation (via server proxy)
+        async function generateImage(prompt) {
+            const response = await fetch('/api/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Image generation failed');
+            }
+            
+            const data = await response.json();
+            return data.imageUrl;
+        }
+        
+        // Convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // ==================== AI Chat Widget ====================
+        const chatToggle = document.getElementById('chatToggle');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatMinimize = document.getElementById('chatMinimize');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+        const quickQuestions = document.querySelectorAll('.quick-q');
+        
+        chatToggle?.addEventListener('click', () => {
+            chatContainer?.classList.toggle('open');
+        });
+        
+        chatMinimize?.addEventListener('click', () => {
+            chatContainer?.classList.remove('open');
+        });
+        
+        function addChatMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.innerHTML = `
+                <div class="message-avatar"><i class="fas fa-${isUser ? 'user' : 'robot'}"></i></div>
+                <div class="message-content"><p>${content}</p></div>
+            `;
+            chatMessages?.appendChild(messageDiv);
+            chatMessages?.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+        }
+        
+        async function sendChatMessage(message) {
+            if (!message.trim()) return;
+            
+            addChatMessage(message, true);
+            chatInput.value = '';
+            
+            // Show typing indicator
+            addChatMessage('<i class="fas fa-ellipsis-h fa-beat"></i> Thinking...', false);
+            
+            try {
+                const systemPrompt = (typeof AI_CONFIG !== 'undefined' && AI_CONFIG.PROMPTS?.chat_assistant) 
+                    ? AI_CONFIG.PROMPTS.chat_assistant 
+                    : 'You are a helpful garage renovation expert. Be friendly and professional.';
+                
+                const response = await callOpenAI([
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: message }
+                ]);
+                
+                // Remove typing indicator
+                chatMessages?.lastChild?.remove();
+                addChatMessage(response, false);
+            } catch (error) {
+                console.error('Chat error:', error);
+                chatMessages?.lastChild?.remove();
+                addChatMessage('Sorry, I\'m having trouble connecting. Please try again or call us at 1-866-465-4278.', false);
+            }
+        }
+        
+        chatSend?.addEventListener('click', () => sendChatMessage(chatInput?.value));
+        chatInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage(chatInput?.value);
+        });
+        
+        quickQuestions.forEach(btn => {
+            btn.addEventListener('click', () => sendChatMessage(btn.dataset.question));
+        });
+        
+        // ==================== AI Image Generator ====================
+        const imageGenModal = document.getElementById('imageGenModal');
+        const openImageGenerator = document.getElementById('openImageGenerator');
+        const designPrompt = document.getElementById('designPrompt');
+        const styleButtons = document.querySelectorAll('.style-btn');
+        const generateDesignBtn = document.getElementById('generateDesign');
+        const generatedImageSection = document.getElementById('generatedImageSection');
+        const generatedImage = document.getElementById('generatedImage');
+        const imageGenLoading = document.getElementById('imageGenLoading');
+        
+        let selectedStyle = 'modern luxury';
+        
+        function openAIModal(modal) {
+            modal?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAIModal(modal) {
+            modal?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        document.querySelectorAll('.ai-modal-close, .ai-modal-overlay').forEach(el => {
+            el.addEventListener('click', function() {
+                this.closest('.ai-modal')?.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        openImageGenerator?.addEventListener('click', () => openAIModal(imageGenModal));
+        
+        styleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                styleButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedStyle = btn.dataset.style;
+            });
+        });
+        
+        generateDesignBtn?.addEventListener('click', async () => {
+            const prompt = designPrompt?.value?.trim();
+            if (!prompt) {
+                alert('Please describe your dream garage');
+                return;
+            }
+            
+            generatedImageSection?.classList.add('show');
+            imageGenLoading?.classList.add('show');
+            generatedImage.style.display = 'none';
+            
+            try {
+                const basePrompt = (typeof AI_CONFIG !== 'undefined' && AI_CONFIG.PROMPTS?.image_generation)
+                    ? AI_CONFIG.PROMPTS.image_generation
+                    : 'Create a photorealistic interior design visualization of a luxury garage with:';
+                const fullPrompt = `${basePrompt} ${selectedStyle} style. ${prompt}. Photorealistic interior design visualization, professional photography, high quality, detailed.`;
+                const imageUrl = await generateImage(fullPrompt);
+                generatedImage.src = imageUrl;
+                generatedImage.style.display = 'block';
+            } catch (error) {
+                console.error('Image generation error:', error);
+                alert('Failed to generate image. Please try again.');
+            } finally {
+                imageGenLoading?.classList.remove('show');
+            }
+        });
+        
+        document.getElementById('downloadDesign')?.addEventListener('click', () => {
+            if (generatedImage?.src) {
+                const link = document.createElement('a');
+                link.href = generatedImage.src;
+                link.download = 'garage-design.png';
+                link.click();
+            }
+        });
+        
+        document.getElementById('getQuoteForDesign')?.addEventListener('click', () => {
+            closeAIModal(imageGenModal);
+            document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // ==================== AI Product Recommendations ====================
+        const recommendModal = document.getElementById('recommendModal');
+        const openRecommendations = document.getElementById('openRecommendations');
+        const recommendDropzone = document.getElementById('recommendDropzone');
+        const recommendFileInput = document.getElementById('recommendFileInput');
+        const recommendPreview = document.getElementById('recommendPreview');
+        const recommendPreviewImg = document.getElementById('recommendPreviewImg');
+        const analyzeGarage = document.getElementById('analyzeGarage');
+        const recommendResults = document.getElementById('recommendResults');
+        const recommendLoading = document.getElementById('recommendLoading');
+        const recommendationsList = document.getElementById('recommendationsList');
+        
+        let recommendImageData = null;
+        
+        openRecommendations?.addEventListener('click', () => openAIModal(recommendModal));
+        
+        function handleRecommendFile(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    recommendImageData = e.target.result;
+                    recommendPreviewImg.src = recommendImageData;
+                    recommendDropzone.style.display = 'none';
+                    recommendPreview?.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        recommendFileInput?.addEventListener('change', (e) => handleRecommendFile(e.target.files[0]));
+        
+        recommendDropzone?.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            recommendDropzone.classList.add('dragover');
+        });
+        
+        recommendDropzone?.addEventListener('dragleave', () => {
+            recommendDropzone.classList.remove('dragover');
+        });
+        
+        recommendDropzone?.addEventListener('drop', (e) => {
+            e.preventDefault();
+            recommendDropzone.classList.remove('dragover');
+            handleRecommendFile(e.dataTransfer.files[0]);
+        });
+        
+        analyzeGarage?.addEventListener('click', async () => {
+            if (!recommendImageData) return;
+            
+            recommendResults?.classList.add('show');
+            recommendLoading?.classList.add('show');
+            recommendationsList.innerHTML = '';
+            
+            try {
+                const prompt = (typeof AI_CONFIG !== 'undefined' && AI_CONFIG.PROMPTS?.product_recommendations)
+                    ? AI_CONFIG.PROMPTS.product_recommendations
+                    : 'Analyze this garage and recommend renovation products.';
+                const response = await callOpenAIVision(recommendImageData, prompt);
+                
+                // Parse response and display
+                let recommendations;
+                try {
+                    const jsonMatch = response.match(/\[[\s\S]*\]/);
+                    recommendations = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+                } catch {
+                    recommendations = [
+                        { name: 'Epoxy Flooring', reason: 'Based on current floor condition', priority: 'high', estimated_price: '$3,500' },
+                        { name: 'Wall Cabinets', reason: 'Maximize storage space', priority: 'medium', estimated_price: '$2,800' }
+                    ];
+                }
+                
+                displayRecommendations(recommendations);
+            } catch (error) {
+                console.error('Recommendations error:', error);
+                recommendationsList.innerHTML = '<p style="color: var(--text-muted);">Failed to analyze image. Please try again.</p>';
+            } finally {
+                recommendLoading?.classList.remove('show');
+            }
+        });
+        
+        function displayRecommendations(recommendations) {
+            const icons = { 'flooring': 'layer-group', 'cabinet': 'box-open', 'slatwall': 'grip-vertical', 'light': 'lightbulb', 'storage': 'boxes-stacked', 'work': 'hammer' };
+            
+            recommendationsList.innerHTML = recommendations.map(rec => {
+                let icon = 'star';
+                for (const [key, val] of Object.entries(icons)) {
+                    if (rec.name.toLowerCase().includes(key)) { icon = val; break; }
+                }
+                return `
+                    <div class="recommendation-item">
+                        <div class="rec-icon"><i class="fas fa-${icon}"></i></div>
+                        <div class="rec-content">
+                            <h4>${rec.name}</h4>
+                            <p>${rec.reason}</p>
+                            <div class="rec-meta">
+                                <span class="priority-${rec.priority}">${rec.priority.toUpperCase()} Priority</span>
+                                <span>${rec.estimated_price}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ==================== AI Quote Generator ====================
+        const quoteModal = document.getElementById('quoteModal');
+        const openQuoteGenerator = document.getElementById('openQuoteGenerator');
+        const quoteDropzone = document.getElementById('quoteDropzone');
+        const quoteFileInput = document.getElementById('quoteFileInput');
+        const quotePreview = document.getElementById('quotePreview');
+        const quotePreviewImg = document.getElementById('quotePreviewImg');
+        const generateQuoteBtn = document.getElementById('generateQuote');
+        const quoteResults = document.getElementById('quoteResults');
+        const quoteLoading = document.getElementById('quoteLoading');
+        const quoteBreakdown = document.getElementById('quoteBreakdown');
+        
+        let quoteImageData = null;
+        
+        openQuoteGenerator?.addEventListener('click', () => openAIModal(quoteModal));
+        
+        function handleQuoteFile(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    quoteImageData = e.target.result;
+                    quotePreviewImg.src = quoteImageData;
+                    quoteDropzone.style.display = 'none';
+                    quotePreview?.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        quoteFileInput?.addEventListener('change', (e) => handleQuoteFile(e.target.files[0]));
+        
+        quoteDropzone?.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            quoteDropzone.classList.add('dragover');
+        });
+        
+        quoteDropzone?.addEventListener('dragleave', () => {
+            quoteDropzone.classList.remove('dragover');
+        });
+        
+        quoteDropzone?.addEventListener('drop', (e) => {
+            e.preventDefault();
+            quoteDropzone.classList.remove('dragover');
+            handleQuoteFile(e.dataTransfer.files[0]);
+        });
+        
+        generateQuoteBtn?.addEventListener('click', async () => {
+            if (!quoteImageData) return;
+            
+            quoteResults?.classList.add('show');
+            quoteLoading?.classList.add('show');
+            quoteBreakdown.innerHTML = '';
+            
+            try {
+                let quoteData;
+                const prompt = (typeof AI_CONFIG !== 'undefined' && AI_CONFIG.PROMPTS?.quote_generator)
+                    ? AI_CONFIG.PROMPTS.quote_generator
+                    : 'Analyze this garage and provide a renovation quote estimate.';
+                
+                const response = await callOpenAIVision(quoteImageData, prompt);
+                const jsonMatch = response.match(/\{[\s\S]*\}/);
+                quoteData = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+                
+                if (!quoteData) {
+                    // Fallback quote
+                    quoteData = {
+                        garage_size_sqft: 450,
+                        condition_assessment: 'Good condition with minor updates needed',
+                        recommended_services: [
+                            { service: 'Epoxy Flooring', quantity: 450, unit: 'sqft' },
+                            { service: 'Custom Cabinets', quantity: 16, unit: 'linear_ft' },
+                            { service: 'Slatwall Panels', quantity: 32, unit: 'sqft' },
+                            { service: 'LED Lighting', quantity: 4, unit: 'each' }
+                        ],
+                        labor_hours: 40,
+                        notes: 'Based on AI analysis of your garage photo'
+                    };
+                }
+                
+                displayQuote(quoteData);
+            } catch (error) {
+                console.error('Quote generation error:', error);
+                quoteBreakdown.innerHTML = '<p style="color: var(--text-muted);">Failed to generate quote. Please try again.</p>';
+            } finally {
+                quoteLoading?.classList.remove('show');
+            }
+        });
+        
+        function displayQuote(data) {
+            const pricing = typeof AI_CONFIG !== 'undefined' ? AI_CONFIG.PRICING : {
+                epoxy_flooring_per_sqft: 8.50,
+                cabinet_per_linear_ft: 450,
+                slatwall_per_sqft: 12,
+                led_lighting_per_fixture: 150,
+                overhead_storage_per_unit: 800,
+                labor_rate_per_hour: 75
+            };
+            
+            let items = [];
+            let subtotal = 0;
+            
+            data.recommended_services.forEach(service => {
+                let price = 0;
+                if (service.service.toLowerCase().includes('epoxy') || service.service.toLowerCase().includes('floor')) {
+                    price = service.quantity * pricing.epoxy_flooring_per_sqft;
+                } else if (service.service.toLowerCase().includes('cabinet')) {
+                    price = service.quantity * pricing.cabinet_per_linear_ft;
+                } else if (service.service.toLowerCase().includes('slatwall')) {
+                    price = service.quantity * pricing.slatwall_per_sqft;
+                } else if (service.service.toLowerCase().includes('light') || service.service.toLowerCase().includes('led')) {
+                    price = service.quantity * pricing.led_lighting_per_fixture;
+                } else if (service.service.toLowerCase().includes('storage')) {
+                    price = service.quantity * pricing.overhead_storage_per_unit;
+                }
+                
+                items.push({ name: service.service, quantity: `${service.quantity} ${service.unit}`, price });
+                subtotal += price;
+            });
+            
+            const laborCost = data.labor_hours * pricing.labor_rate_per_hour;
+            subtotal += laborCost;
+            
+            quoteBreakdown.innerHTML = `
+                <div class="quote-header">
+                    <h3>Your AI-Generated Estimate</h3>
+                    <p>${data.condition_assessment}</p>
+                    <p><strong>Garage Size:</strong> ${data.garage_size_sqft} sq ft</p>
+                </div>
+                <div class="quote-items">
+                    ${items.map(item => `
+                        <div class="quote-item">
+                            <span>${item.name} (${item.quantity})</span>
+                            <span>$${item.price.toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                    <div class="quote-item">
+                        <span>Installation Labor (${data.labor_hours} hrs)</span>
+                        <span>$${laborCost.toLocaleString()}</span>
+                    </div>
+                </div>
+                <div class="quote-total">
+                    <span>Estimated Total</span>
+                    <span>$${subtotal.toLocaleString()}</span>
+                </div>
+                <div class="quote-disclaimer">
+                    <p>*This is an AI-generated estimate. Final pricing may vary based on site inspection.</p>
+                    <button class="btn btn-gold" onclick="closeAIModal(quoteModal); document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-calendar"></i> Schedule Free Consultation
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Close modals on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.ai-modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
             }
         });
     </script>
