@@ -12,12 +12,44 @@
     <!-- TensorFlow.js for AI-powered AR -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2"></script>
+    <!-- Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,it,pt,zh-CN,ja,ko,ar,hi,ru',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        /* Hide ALL Google Translate UI elements */
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0 !important; }
+        .skiptranslate { display: none !important; }
+        #google_translate_element { display: none !important; }
+        .goog-te-gadget { display: none !important; }
+        .goog-te-spinner-pos { display: none !important; }
+        .goog-logo-link { display: none !important; }
+        .goog-te-balloon-frame { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        .goog-te-balloon { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+        iframe.goog-te-menu-frame { display: none !important; }
+        div#goog-gt- { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-ZVi9od-l4eHX-hSRGPd { display: none !important; }
+    </style>
 </head>
 <body class="dark-theme">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#home" class="nav-brand">
+            <a href="#home" class="nav-brand notranslate" translate="no">
                 <div class="logo-icon">
                     <i class="fas fa-warehouse"></i>
                 </div>
@@ -45,6 +77,27 @@
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <a href="#consultation" class="btn btn-gold nav-cta">Get Free Design</a>
+            <div class="language-selector notranslate" translate="no">
+                <button class="language-btn" id="languageBtn" title="Select Language">
+                    <i class="fas fa-globe"></i>
+                    <span class="lang-text">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown notranslate" id="languageDropdown" translate="no">
+                    <a href="#" data-lang="en" class="lang-option active"><span class="flag">🇺🇸</span> English</a>
+                    <a href="#" data-lang="es" class="lang-option"><span class="flag">🇪🇸</span> Español</a>
+                    <a href="#" data-lang="fr" class="lang-option"><span class="flag">🇫🇷</span> Français</a>
+                    <a href="#" data-lang="de" class="lang-option"><span class="flag">🇩🇪</span> Deutsch</a>
+                    <a href="#" data-lang="it" class="lang-option"><span class="flag">🇮🇹</span> Italiano</a>
+                    <a href="#" data-lang="pt" class="lang-option"><span class="flag">🇵🇹</span> Português</a>
+                    <a href="#" data-lang="zh" class="lang-option"><span class="flag">🇨🇳</span> 中文</a>
+                    <a href="#" data-lang="ja" class="lang-option"><span class="flag">🇯🇵</span> 日本語</a>
+                    <a href="#" data-lang="ko" class="lang-option"><span class="flag">🇰🇷</span> 한국어</a>
+                    <a href="#" data-lang="ar" class="lang-option"><span class="flag">🇸🇦</span> العربية</a>
+                    <a href="#" data-lang="hi" class="lang-option"><span class="flag">🇮🇳</span> हिन्दी</a>
+                    <a href="#" data-lang="ru" class="lang-option"><span class="flag">🇷🇺</span> Русский</a>
+                </div>
+            </div>
             <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
                 <i class="fas fa-sun"></i>
                 <i class="fas fa-moon"></i>
@@ -54,6 +107,9 @@
             </button>
         </div>
     </nav>
+    
+    <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element"></div>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -398,14 +454,27 @@
             <h2 class="section-title centered">See The Transformation In Motion</h2>
             <div class="video-container">
                 <div class="video-wrapper">
-                    <div class="video-placeholder">
-                        <i class="fas fa-car-side"></i>
-                        <button class="play-btn">
+                    <video id="garageVideo" class="garage-video" poster="" playsinline>
+                        <source src="videos/garage-transformation.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-overlay" id="videoOverlay">
+                        <button class="play-btn" id="videoPlayBtn">
                             <i class="fas fa-play"></i>
                         </button>
                     </div>
                 </div>
-                <a href="#" class="btn btn-outline-gold video-btn">Play Video</a>
+                <div class="video-controls">
+                    <button class="btn btn-gold" id="playPauseBtn">
+                        <i class="fas fa-play"></i> Play Video
+                    </button>
+                    <button class="btn btn-outline-gold" id="muteBtn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button class="btn btn-outline-gold" id="fullscreenBtn">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -814,6 +883,147 @@
             // Save preference
             const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
             localStorage.setItem('theme', currentTheme);
+        });
+
+        // Language Selector
+        const languageBtn = document.getElementById('languageBtn');
+        const languageSelector = document.querySelector('.language-selector');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const langOptions = document.querySelectorAll('.lang-option');
+        const langText = document.querySelector('.lang-text');
+
+        // Detect current language from cookie on page load
+        function getCurrentLanguage() {
+            const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);
+            if (match) {
+                // Map Google lang codes back to our codes
+                const reverseMap = {
+                    'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de',
+                    'it': 'it', 'pt': 'pt', 'zh-CN': 'zh', 'ja': 'ja',
+                    'ko': 'ko', 'ar': 'ar', 'hi': 'hi', 'ru': 'ru'
+                };
+                return reverseMap[match[1]] || match[1];
+            }
+            return 'en';
+        }
+
+        // Set initial language state
+        const currentLang = getCurrentLanguage();
+        if (langText) {
+            langText.textContent = currentLang.toUpperCase().substring(0, 2);
+        }
+        langOptions.forEach(opt => {
+            opt.classList.remove('active');
+            if (opt.dataset.lang === currentLang) {
+                opt.classList.add('active');
+            }
+        });
+
+        languageBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageSelector.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            languageSelector?.classList.remove('active');
+        });
+
+        languageDropdown?.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Function to change Google Translate language
+        function changeLanguage(langCode) {
+            // Map our lang codes to Google Translate codes
+            const langMap = {
+                'en': 'en',
+                'es': 'es',
+                'fr': 'fr',
+                'de': 'de',
+                'it': 'it',
+                'pt': 'pt',
+                'zh': 'zh-CN',
+                'ja': 'ja',
+                'ko': 'ko',
+                'ar': 'ar',
+                'hi': 'hi',
+                'ru': 'ru'
+            };
+            
+            const googleLang = langMap[langCode] || langCode;
+            
+            // Set Google Translate cookie
+            const domain = window.location.hostname;
+            document.cookie = `googtrans=/en/${googleLang}; path=/; domain=${domain}`;
+            document.cookie = `googtrans=/en/${googleLang}; path=/`;
+            
+            // Reload to apply translation
+            window.location.reload();
+        }
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = option.dataset.lang;
+                
+                // Update active state
+                langOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                // Update button text
+                langText.textContent = lang.toUpperCase().substring(0, 2);
+                
+                // Close dropdown
+                languageSelector.classList.remove('active');
+                
+                // Trigger Google Translate
+                changeLanguage(lang);
+            });
+        });
+
+        // Video Player Controls
+        const garageVideo = document.getElementById('garageVideo');
+        const videoOverlay = document.getElementById('videoOverlay');
+        const videoPlayBtn = document.getElementById('videoPlayBtn');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        
+        function togglePlay() {
+            if (garageVideo.paused) {
+                garageVideo.play();
+                videoOverlay.classList.add('hidden');
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            } else {
+                garageVideo.pause();
+                videoOverlay.classList.remove('hidden');
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play Video';
+            }
+        }
+        
+        videoPlayBtn?.addEventListener('click', togglePlay);
+        playPauseBtn?.addEventListener('click', togglePlay);
+        videoOverlay?.addEventListener('click', togglePlay);
+        
+        garageVideo?.addEventListener('ended', () => {
+            videoOverlay.classList.remove('hidden');
+            playPauseBtn.innerHTML = '<i class="fas fa-redo"></i> Replay';
+        });
+        
+        muteBtn?.addEventListener('click', () => {
+            garageVideo.muted = !garageVideo.muted;
+            muteBtn.innerHTML = garageVideo.muted 
+                ? '<i class="fas fa-volume-mute"></i>' 
+                : '<i class="fas fa-volume-up"></i>';
+        });
+        
+        fullscreenBtn?.addEventListener('click', () => {
+            if (garageVideo.requestFullscreen) {
+                garageVideo.requestFullscreen();
+            } else if (garageVideo.webkitRequestFullscreen) {
+                garageVideo.webkitRequestFullscreen();
+            }
         });
 
         // Mobile menu toggle

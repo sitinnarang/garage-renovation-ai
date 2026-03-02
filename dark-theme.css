@@ -1,20 +1,20 @@
 /* Dark Luxury Theme - Garage Transformations */
 
 :root {
-    --bg-dark: #0a0a0a;
-    --bg-darker: #050505;
-    --bg-card: #111111;
-    --bg-card-hover: #1a1a1a;
+    --bg-dark: #1a1a2e;
+    --bg-darker: #141428;
+    --bg-card: #252545;
+    --bg-card-hover: #2d2d50;
     --gold: #d4a855;
     --gold-light: #e8c87a;
     --gold-dark: #b8923f;
     --orange: #ff8c42;
     --orange-glow: rgba(255, 140, 66, 0.3);
     --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.7);
-    --text-muted: rgba(255, 255, 255, 0.5);
-    --border-color: rgba(255, 255, 255, 0.1);
-    --border-gold: rgba(212, 168, 85, 0.3);
+    --text-secondary: rgba(255, 255, 255, 0.75);
+    --text-muted: rgba(255, 255, 255, 0.55);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --border-gold: rgba(212, 168, 85, 0.35);
 }
 
 /* Light Theme Variables */
@@ -125,15 +125,17 @@ body {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 20px;
+    flex-wrap: nowrap;
 }
 
 .nav-links a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 500;
     transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -232,13 +234,116 @@ body {
 }
 
 .nav-cta {
-    padding: 10px 24px;
+    padding: 6px 12px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Language Selector */
+.language-selector {
+    position: relative;
+    margin-right: 10px;
+}
+
+.language-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-size: 0.8rem;
+}
+
+.language-btn:hover {
+    border-color: var(--gold);
+    background: rgba(212, 168, 85, 0.1);
+}
+
+.language-btn i.fa-globe {
+    color: var(--gold);
+    font-size: 0.95rem;
+}
+
+.language-btn i.fa-chevron-down {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+}
+
+.language-selector.active .language-btn i.fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.lang-text {
+    font-weight: 600;
+    min-width: 24px;
+}
+
+.language-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 180px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.language-selector.active .language-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.lang-option:hover {
+    background: rgba(212, 168, 85, 0.15);
+    color: var(--text-primary);
+}
+
+.lang-option.active {
+    background: rgba(212, 168, 85, 0.2);
+    color: var(--gold);
+}
+
+.lang-option .flag {
+    font-size: 1.2rem;
 }
 
 /* Theme Toggle Button */
 .theme-toggle {
-    width: 45px;
-    height: 45px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: var(--bg-card);
     border: 1px solid var(--border-gold);
@@ -249,7 +354,7 @@ body {
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    margin-left: 15px;
+    margin-left: 10px;
 }
 
 .theme-toggle:hover {
@@ -260,7 +365,7 @@ body {
 
 .theme-toggle i {
     position: absolute;
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     transition: all 0.3s ease;
 }
 
@@ -774,8 +879,83 @@ body {
     overflow: hidden;
     border: 1px solid var(--border-gold);
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
+.garage-video {
+    width: 100%;
+    display: block;
+    background: #000;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.video-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.video-overlay:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.play-btn {
+    width: 90px;
+    height: 90px;
+    background: rgba(212, 168, 85, 0.95);
+    border: none;
+    border-radius: 50%;
+    color: var(--bg-dark);
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.play-btn i {
+    font-size: 1.8rem;
+    color: var(--bg-dark);
+    margin-left: 6px;
+}
+
+.play-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 15px 50px rgba(212, 168, 85, 0.5);
+}
+
+.video-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.video-controls .btn {
+    min-width: auto;
+    padding: 12px 25px;
+}
+
+.video-controls #muteBtn,
+.video-controls #fullscreenBtn {
+    padding: 12px 18px;
+}
+
+/* Legacy placeholder (kept for fallback) */
 .video-placeholder {
     aspect-ratio: 16/9;
     background: 
@@ -790,33 +970,6 @@ body {
 .video-placeholder i {
     font-size: 6rem;
     color: rgba(212, 168, 85, 0.3);
-}
-
-.play-btn {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    background: rgba(212, 168, 85, 0.9);
-    border: none;
-    border-radius: 50%;
-    color: var(--bg-dark);
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.play-btn i {
-    font-size: 1.5rem;
-    color: var(--bg-dark);
-    margin-left: 5px;
-}
-
-.play-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 40px rgba(212, 168, 85, 0.5);
 }
 
 .video-btn {
@@ -1056,9 +1209,13 @@ body {
     }
     
     .theme-toggle {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         margin-left: 10px;
+    }
+    
+    .language-selector {
+        display: none;
     }
     
     .nav-cta {
