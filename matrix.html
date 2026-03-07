@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix View | Garage Transformations</title>
+    <link rel="stylesheet" href="dark-theme.css">
+    <link rel="stylesheet" href="matrix.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme matrix-page">
+    <!-- Matrix Canvas Background -->
+    <canvas id="matrix-canvas"></canvas>
+    
+    <!-- Navigation Overlay -->
+    <nav class="matrix-nav">
+        <a href="index.html" class="matrix-back-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span>Exit Matrix</span>
+        </a>
+        <div class="matrix-controls">
+            <button id="toggle-rain" class="matrix-btn active" title="Toggle Rain">
+                <i class="fas fa-cloud-rain"></i>
+            </button>
+            <button id="change-color" class="matrix-btn" title="Change Color">
+                <i class="fas fa-palette"></i>
+            </button>
+            <button id="change-speed" class="matrix-btn" title="Change Speed">
+                <i class="fas fa-tachometer-alt"></i>
+            </button>
+            <button id="toggle-content" class="matrix-btn" title="Toggle Content">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Floating Content Panel -->
+    <div class="matrix-content" id="matrix-content">
+        <div class="matrix-panel">
+            <div class="matrix-header">
+                <div class="matrix-title">
+                    <i class="fas fa-warehouse"></i>
+                    <h1>GARAGE<span>MATRIX</span></h1>
+                </div>
+                <p class="matrix-subtitle">Welcome to the digital realm of garage transformation</p>
+            </div>
+            
+            <div class="matrix-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-car"></i></div>
+                    <div class="stat-value" data-target="2500">0</div>
+                    <div class="stat-label">Garages Transformed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-value" data-target="98">0</div>
+                    <div class="stat-label">Satisfaction Rate %</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-award"></i></div>
+                    <div class="stat-value" data-target="15">0</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tools"></i></div>
+                    <div class="stat-value" data-target="50">0</div>
+                    <div class="stat-label">Product Options</div>
+                </div>
+            </div>
+
+            <div class="matrix-services">
+                <h2><i class="fas fa-code"></i> Services Decrypted</h2>
+                <div class="service-grid">
+                    <a href="index.html#flooring" class="service-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Flooring Systems</span>
+                    </a>
+                    <a href="index.html#cabinets" class="service-item">
+                        <i class="fas fa-box"></i>
+                        <span>Cabinet Storage</span>
+                    </a>
+                    <a href="slatwall.html" class="service-item">
+                        <i class="fas fa-th-large"></i>
+                        <span>Slatwall Panels</span>
+                    </a>
+                    <a href="linea.html" class="service-item">
+                        <i class="fas fa-grip-lines"></i>
+                        <span>LINEA System</span>
+                    </a>
+                    <a href="parking-locker.html" class="service-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Parking Locker</span>
+                    </a>
+                    <a href="index.html#contact" class="service-item highlight">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="matrix-quote">
+                <blockquote>
+                    "Free your mind... and your garage."
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matrix Terminal -->
+    <div class="matrix-terminal" id="matrix-terminal">
+        <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">garage_matrix.exe</span>
+        </div>
+        <div class="terminal-body" id="terminal-output">
+            <p><span class="prompt">></span> Initializing Garage Matrix...</p>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let columns;
+        let drops = [];
+        let fontSize = 16;
+        let isRaining = true;
+        let currentColor = '#00ff41';
+        let speed = 33;
+        
+        const colors = ['#00ff41', '#ff0000', '#00ffff', '#ffff00', '#ff00ff', '#ffd700'];
+        let colorIndex = 0;
+
+        // Characters for the rain (mix of katakana, numbers, and symbols)
+        const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()';
+
+        function initMatrix() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = Math.floor(width / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -100;
+            }
+        }
+
+        function draw() {
+            if (!isRaining) {
+                requestAnimationFrame(draw);
+                return;
+            }
+
+            // Semi-transparent black for trail effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = currentColor;
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Random brightness for glowing effect
+                const brightness = Math.random();
+                if (brightness > 0.95) {
+                    ctx.fillStyle = '#ffffff';
+                } else if (brightness > 0.8) {
+                    ctx.fillStyle = currentColor;
+                    ctx.shadowColor = currentColor;
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.fillStyle = currentColor;
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.fillText(char, x, y);
+                ctx.shadowBlur = 0;
+
+                // Reset drop when it goes off screen
+                if (y > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        // Animation loop with speed control
+        let lastTime = 0;
+        function animate(currentTime) {
+            if (currentTime - lastTime >= speed) {
+                draw();
+                lastTime = currentTime;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize
+        initMatrix();
+        requestAnimationFrame(animate);
+
+        // Resize handler
+        window.addEventListener('resize', initMatrix);
+
+        // Control buttons
+        document.getElementById('toggle-rain').addEventListener('click', function() {
+            isRaining = !isRaining;
+            this.classList.toggle('active');
+            if (!isRaining) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, width, height);
+            }
+        });
+
+        document.getElementById('change-color').addEventListener('click', function() {
+            colorIndex = (colorIndex + 1) % colors.length;
+            currentColor = colors[colorIndex];
+            this.style.color = currentColor;
+        });
+
+        document.getElementById('change-speed').addEventListener('click', function() {
+            if (speed === 33) {
+                speed = 16; // Fast
+                this.querySelector('i').classList.add('fa-spin');
+            } else if (speed === 16) {
+                speed = 66; // Slow
+                this.querySelector('i').classList.remove('fa-spin');
+            } else {
+                speed = 33; // Normal
+            }
+        });
+
+        document.getElementById('toggle-content').addEventListener('click', function() {
+            const content = document.getElementById('matrix-content');
+            content.classList.toggle('hidden');
+            this.classList.toggle('active');
+        });
+
+        // Animated counter for stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-value');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+
+                setTimeout(updateCounter, 500);
+            });
+        }
+
+        // Terminal typing effect
+        const terminalMessages = [
+            'System online...',
+            'Scanning garage dimensions...',
+            'Loading premium materials database...',
+            'Analyzing storage optimization algorithms...',
+            'Calculating transformation possibilities...',
+            'Ready for consultation.',
+            '> Type "help" for commands'
+        ];
+
+        function typeTerminal() {
+            const output = document.getElementById('terminal-output');
+            let msgIndex = 0;
+            let charIndex = 0;
+
+            function typeChar() {
+                if (msgIndex >= terminalMessages.length) return;
+
+                const msg = terminalMessages[msgIndex];
+                
+                if (charIndex === 0) {
+                    const p = document.createElement('p');
+                    p.innerHTML = '<span class="prompt">></span> ';
+                    output.appendChild(p);
+                    output.scrollTop = output.scrollHeight;
+                }
+
+                const currentP = output.lastElementChild;
+                
+                if (charIndex < msg.length) {
+                    currentP.innerHTML += msg[charIndex];
+                    charIndex++;
+                    setTimeout(typeChar, 30 + Math.random() * 50);
+                } else {
+                    charIndex = 0;
+                    msgIndex++;
+                    setTimeout(typeChar, 500);
+                }
+            }
+
+            setTimeout(typeChar, 1000);
+        }
+
+        // Start animations when page loads
+        window.addEventListener('load', () => {
+            animateCounters();
+            typeTerminal();
+        });
+    </script>
+</body>
+</html>

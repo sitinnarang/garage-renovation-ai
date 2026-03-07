@@ -340,6 +340,27 @@ body {
     font-size: 1.2rem;
 }
 
+/* Language Divider */
+.lang-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+    margin: 8px 0;
+}
+
+/* Matrix Option */
+.lang-option.matrix-option {
+    color: #00ff41;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.lang-option.matrix-option:hover {
+    background: rgba(0, 255, 65, 0.15);
+    color: #00ff41;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+}
+
 /* Theme Toggle Button */
 .theme-toggle {
     width: 32px;

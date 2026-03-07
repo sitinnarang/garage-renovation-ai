@@ -687,6 +687,8 @@
                     <a href="#" data-lang="ar" class="lang-option"><span class="flag">🇸🇦</span> العربية</a>
                     <a href="#" data-lang="hi" class="lang-option"><span class="flag">🇮🇳</span> हिन्दी</a>
                     <a href="#" data-lang="ru" class="lang-option"><span class="flag">🇷🇺</span> Русский</a>
+                    <div class="lang-divider"></div>
+                    <a href="matrix.html" class="lang-option matrix-option"><span class="flag">💊</span> Matrix</a>
                 </div>
             </div>
             <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
@@ -1173,9 +1175,14 @@
         
         langOptions.forEach(option => {
             option.addEventListener('click', (e) => {
+                const lang = option.dataset.lang;
+                
+                // Skip if no data-lang (e.g., Matrix link)
+                if (!lang) return;
+                
                 e.preventDefault();
                 e.stopPropagation();
-                setLanguage(option.dataset.lang);
+                setLanguage(lang);
                 languageDropdown?.classList.remove('show');
             });
         });

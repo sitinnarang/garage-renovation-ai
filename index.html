@@ -73,6 +73,7 @@
                 <li><a href="#services">Services</a></li>
                 <li><a href="#ar-view"><i class="fas fa-cube"></i> AR View</a></li>
                 <li><a href="#ai-features"><i class="fas fa-robot"></i> AI Tools</a></li>
+                <li><a href="matrix.html"><i class="fas fa-code"></i> Matrix</a></li>
                 <li><a href="#video">Videos</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -96,6 +97,8 @@
                     <a href="#" data-lang="ar" class="lang-option"><span class="flag">🇸🇦</span> العربية</a>
                     <a href="#" data-lang="hi" class="lang-option"><span class="flag">🇮🇳</span> हिन्दी</a>
                     <a href="#" data-lang="ru" class="lang-option"><span class="flag">🇷🇺</span> Русский</a>
+                    <div class="lang-divider"></div>
+                    <a href="matrix.html" class="lang-option matrix-option"><span class="flag">💊</span> Matrix</a>
                 </div>
             </div>
             <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
@@ -1027,8 +1030,12 @@
 
         langOptions.forEach(option => {
             option.addEventListener('click', (e) => {
-                e.preventDefault();
                 const lang = option.dataset.lang;
+                
+                // Skip if no data-lang (e.g., Matrix link)
+                if (!lang) return;
+                
+                e.preventDefault();
                 
                 // Update active state
                 langOptions.forEach(opt => opt.classList.remove('active'));
