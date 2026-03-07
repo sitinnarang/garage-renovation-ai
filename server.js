@@ -209,9 +209,12 @@ app.post('/api/generate-image', async (req, res) => {
         // GitHub Models API doesn't support image generation
         // Return curated demo images based on style keywords
         const demoImages = [
-            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1024&q=80',
-            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1024&q=80',
-            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1024&q=80'
+            '/images/Escalade-makeover-after.jpg.jpeg',
+            '/images/Oakville-Maserati-after-Garage-Living.jpg.jpeg',
+            '/images/BMW.jpg.jpeg',
+            '/images/Volvo-Recharge-makeover-after-garage-living-1.jpg.jpeg',
+            '/images/xgarage-makeover-01-after.jpg.pagespeed.ic.JiOPRDb5Od.jpg.jpeg',
+            '/images/fitness-room-garage-after.jpg_2.jpeg'
         ];
         
         const randomImage = demoImages[Math.floor(Math.random() * demoImages.length)];
