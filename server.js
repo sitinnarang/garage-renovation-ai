@@ -207,22 +207,13 @@ app.post('/api/generate-image', async (req, res) => {
         }
         
         // GitHub Models API doesn't support image generation
-        // Return curated demo images based on style keywords
-        const demoImages = [
-            '/images/Escalade-makeover-after.jpg.jpeg',
-            '/images/Oakville-Maserati-after-Garage-Living.jpg.jpeg',
-            '/images/BMW.jpg.jpeg',
-            '/images/Volvo-Recharge-makeover-after-garage-living-1.jpg.jpeg',
-            '/images/xgarage-makeover-01-after.jpg.pagespeed.ic.JiOPRDb5Od.jpg.jpeg',
-            '/images/fitness-room-garage-after.jpg_2.jpeg'
-        ];
-        
-        const randomImage = demoImages[Math.floor(Math.random() * demoImages.length)];
+        // Return curated demo image for all styles
+        const demoImage = '/images/IMG_3112.webp';
         
         res.json({
             success: true,
             demo: true,
-            imageUrl: randomImage,
+            imageUrl: demoImage,
             message: 'Demo mode: Image generation requires OpenAI DALL-E API'
         });
         
