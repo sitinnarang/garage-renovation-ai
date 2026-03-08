@@ -188,7 +188,7 @@
                 <div class="transform-card after-card">
                     <div class="transform-image after-img">
                         <div class="transform-label">After</div>
-                        <img src="images/IMG_3112.webp" alt="Luxury Garage Transformation" class="transform-img">
+                        <img src="images/a73c50f5-5682-4850-accd-1a426c3d831b.png" alt="Professional Auto Shop" class="transform-img">
                         <button class="nav-arrow"><i class="fas fa-chevron-right"></i></button>
                     </div>
                     <div class="transform-info">
@@ -233,7 +233,7 @@
                         </div>
                         <div class="gallery-after">
                             <span class="gallery-label">After</span>
-                            <img src="images/IMG_3112.webp" alt="Luxury Garage After" class="gallery-img">
+                            <img src="images/a73c50f5-5682-4850-accd-1a426c3d831b.png" alt="Professional Auto Shop" class="gallery-img">
                         </div>
                     </div>
                 </div>
@@ -1416,7 +1416,10 @@
             arProducts.forEach((product, index) => {
                 const thumb = document.createElement('div');
                 thumb.className = 'ar-thumbnail' + (index === 0 ? ' active' : '');
-                thumb.innerHTML = `<img src="${product.image}" alt="${product.name}">`;
+                thumb.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <span class="ar-thumb-label">${product.name}</span>
+                `;
                 thumb.addEventListener('click', (e) => selectArProduct(product.image, e));
                 arProductThumbnails.appendChild(thumb);
             });
