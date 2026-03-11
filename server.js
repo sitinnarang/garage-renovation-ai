@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+const crypto = require('crypto');
+const OpenAI = require('openai');
 require('dotenv').config();
 
 const app = express();
@@ -26,12 +28,87 @@ db.serialize(() => {
             status TEXT DEFAULT 'new'
         )
     `);
+    
+    // Create garage_images table for AR visualization
+    db.run(`
+        CREATE TABLE IF NOT EXISTS garage_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            image_data TEXT NOT NULL,
+            filename TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+    
+    // Create image_cache table for caching AI-generated results
+    db.run(`
+        CREATE TABLE IF NOT EXISTS image_cache (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            image_hash TEXT UNIQUE NOT NULL,
+            modernization TEXT,
+            generated_image TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+    
     console.log('SQLite database initialized');
 });
 
 // GitHub Models API Configuration
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const AI_ENDPOINT = process.env.AI_ENDPOINT || 'https://models.inference.ai.azure.com/chat/completions';
+
+// OpenAI API Configuration (for image generation)
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_IMAGE_ENDPOINT = 'https://api.openai.com/v1/images/generations';
+const OPENAI_IMAGE_EDIT_ENDPOINT = 'https://api.openai.com/v1/images/edits';
+
+// Anthropic Claude API Configuration
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-3-5-sonnet-20241022';
+const ANTHROPIC_ENDPOINT = 'https://api.anthropic.com/v1/messages';
+
+// Helper function to call Claude API with vision
+async function callClaudeVision(imageData, prompt) {
+    const response = await fetch(ANTHROPIC_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+            model: CLAUDE_MODEL,
+            max_tokens: 500,
+            messages: [
+                {
+                    role: 'user',
+                    content: [
+                        {
+                            type: 'image',
+                            source: {
+                                type: 'base64',
+                                media_type: imageData.split(';')[0].split(':')[1] || 'image/jpeg',
+                                data: imageData.split(',')[1]
+                            }
+                        },
+                        {
+                            type: 'text',
+                            text: prompt
+                        }
+                    ]
+                }
+            ]
+        })
+    });
+    
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Claude API Error: ${response.status} - ${error}`);
+    }
+    
+    const data = await response.json();
+    return data.content[0].text;
+}
 const AI_MODEL = process.env.AI_MODEL || 'gpt-4o-mini';
 
 // Helper function to call GitHub Models API
@@ -66,6 +143,312 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
 // ==================== API Routes ====================
+
+// ==================== Garage Images API ====================
+
+// Get all saved garage images
+app.get('/api/garage-images', (req, res) => {
+    db.all('SELECT id, image_data, filename, created_at FROM garage_images ORDER BY created_at DESC LIMIT 10', [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching images:', err);
+            return res.status(500).json({ error: 'Failed to fetch images' });
+        }
+        res.json({ images: rows });
+    });
+});
+
+// Save a new garage image
+app.post('/api/garage-images', (req, res) => {
+    const { image_data, filename } = req.body;
+    
+    if (!image_data) {
+        return res.status(400).json({ error: 'No image data provided' });
+    }
+    
+    // Check count and delete oldest if over 10
+    db.get('SELECT COUNT(*) as count FROM garage_images', [], (err, row) => {
+        if (row && row.count >= 10) {
+            db.run('DELETE FROM garage_images WHERE id = (SELECT id FROM garage_images ORDER BY created_at ASC LIMIT 1)');
+        }
+        
+        db.run(
+            'INSERT INTO garage_images (image_data, filename) VALUES (?, ?)',
+            [image_data, filename || 'garage_image.jpg'],
+            function(err) {
+                if (err) {
+                    console.error('Error saving image:', err);
+                    return res.status(500).json({ error: 'Failed to save image' });
+                }
+                res.json({ success: true, id: this.lastID });
+            }
+        );
+    });
+});
+
+// Delete a garage image
+app.delete('/api/garage-images/:id', (req, res) => {
+    const { id } = req.params;
+    
+    db.run('DELETE FROM garage_images WHERE id = ?', [id], function(err) {
+        if (err) {
+            console.error('Error deleting image:', err);
+            return res.status(500).json({ error: 'Failed to delete image' });
+        }
+        res.json({ success: true, deleted: this.changes });
+    });
+});
+
+// Delete all garage images
+app.delete('/api/garage-images', (req, res) => {
+    db.run('DELETE FROM garage_images', [], function(err) {
+        if (err) {
+            console.error('Error clearing images:', err);
+            return res.status(500).json({ error: 'Failed to clear images' });
+        }
+        res.json({ success: true, deleted: this.changes });
+    });
+});
+
+// Validate if image is a garage/cabinet related image
+app.post('/api/validate-garage-image', async (req, res) => {
+    const { image } = req.body;
+    
+    if (!image) {
+        return res.status(400).json({ valid: false, error: 'No image provided' });
+    }
+    
+    // If no GitHub token, do basic validation (allow all)
+    if (!GITHUB_TOKEN) {
+        return res.json({ 
+            valid: true, 
+            message: 'Image accepted (AI validation unavailable)',
+            detected: 'garage'
+        });
+    }
+    
+    try {
+        const response = await fetch(AI_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GITHUB_TOKEN}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are an image classifier. Analyze the image and determine if it shows a garage, cabinet, storage system, workshop, or related renovation space. Respond with JSON only: {"isGarage": boolean, "detected": string, "confidence": number}. "detected" should describe what you see (e.g., "garage interior", "storage cabinet", "kitchen", "landscape", etc). "confidence" is 0-100.'
+                    },
+                    {
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: 'Is this image a garage, cabinet, storage area, or workshop? Classify it.'
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: image,
+                                    detail: 'low'
+                                }
+                            }
+                        ]
+                    }
+                ],
+                max_tokens: 150
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const aiResponse = data.choices[0].message.content;
+        
+        // Parse AI response
+        let result;
+        try {
+            result = JSON.parse(aiResponse.match(/\{[\s\S]*\}/)?.[0] || '{}');
+        } catch {
+            result = { isGarage: true, detected: 'unknown', confidence: 50 };
+        }
+        
+        if (result.isGarage) {
+            res.json({
+                valid: true,
+                message: `Detected: ${result.detected}`,
+                detected: result.detected,
+                confidence: result.confidence
+            });
+        } else {
+            res.json({
+                valid: false,
+                message: `This doesn't appear to be a garage image. Detected: ${result.detected}`,
+                detected: result.detected,
+                confidence: result.confidence
+            });
+        }
+        
+    } catch (error) {
+        console.error('Image validation error:', error);
+        // On error, allow the image (fail open)
+        res.json({ 
+            valid: true, 
+            message: 'Validation skipped',
+            detected: 'unknown'
+        });
+    }
+});
+
+// AI Modernize Garage - Transform image with gpt-image-1 (with caching)
+app.post('/api/modernize-garage', async (req, res) => {
+    const { imageData } = req.body;
+    
+    if (!imageData) {
+        return res.status(400).json({ error: 'No image provided' });
+    }
+    
+    // Check for required API keys
+    if (!OPENAI_API_KEY) {
+        return res.json({
+            success: true,
+            modernization: `Vision: Sleek Modern Garage with Premium Finish
+
+1. **Flooring**: Install epoxy coating with metallic flake finish in charcoal gray.
+2. **Lighting**: Add hexagonal LED ceiling panels with RGB capability.
+3. **Storage Cabinets**: Premium modular cabinet system in matte black.
+4. **Wall Treatment**: Apply textured slatwall panels in graphite.
+5. **Smart Tech**: Integrate smart home controls for lighting and climate.
+6. **Workspace**: Add stainless steel workbench with LED task lighting.`,
+            generatedImage: null,
+            demo: true
+        });
+    }
+    
+    try {
+        // Generate hash of the image for caching
+        const imageHash = crypto.createHash('md5').update(imageData).digest('hex');
+        console.log('Image hash:', imageHash);
+        
+        // Check cache first
+        const cached = await new Promise((resolve, reject) => {
+            db.get(
+                'SELECT modernization, generated_image FROM image_cache WHERE image_hash = ?',
+                [imageHash],
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+        
+        if (cached && cached.generated_image) {
+            console.log('Cache HIT - Returning cached result');
+            return res.json({
+                success: true,
+                modernization: cached.modernization,
+                generatedImage: cached.generated_image,
+                cached: true
+            });
+        }
+        
+        console.log('Cache MISS - Using OpenAI gpt-image-1 for image transformation...');
+        
+        // Extract base64 data and convert to buffer (like ChatGPT example)
+        const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+        const imageBuffer = Buffer.from(base64Data, 'base64');
+        
+        let generatedImage = null;
+        let modernization = `Vision: Premium Modern Garage Transformation
+
+1. **Flooring**: Polished gray epoxy with metallic flake finish for a sleek showroom look.
+2. **Lighting**: Hexagonal LED ceiling panels providing bright, even illumination throughout.
+3. **Storage**: Black modular cabinet system with soft-close drawers and stainless handles.
+4. **Walls**: Clean white and charcoal gray paint for a modern, premium feel.
+5. **Organization**: Wall-mounted tool storage and dedicated workbench area.
+6. **Atmosphere**: Car showroom ambiance with professional-grade lighting.`;
+        
+        try {
+            console.log('Calling gpt-image-1 via OpenAI SDK with toFile...');
+            
+            // Initialize OpenAI client with latest SDK
+            const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+            
+            // Convert buffer to File using OpenAI's toFile helper
+            const { toFile } = await import('openai');
+            const imageFile = await toFile(imageBuffer, 'garage.png', { type: 'image/png' });
+            
+            // Use images.edit which supports image input with gpt-image-1
+            const imageResponse = await openai.images.edit({
+                model: 'gpt-image-1',
+                image: imageFile,
+                prompt: `Transform this garage into a modern luxury garage.
+Keep the original room layout, perspective, camera angle, and any vehicles in their positions.
+Add polished gray epoxy flooring with metallic flakes, clean white and charcoal walls,
+modern hexagonal LED ceiling panel lights, sleek black storage cabinets, organized tools,
+and a premium automotive showroom feel.`,
+                size: '1024x1024'
+            });
+            
+            if (imageResponse.data && imageResponse.data[0]) {
+                if (imageResponse.data[0].b64_json) {
+                    generatedImage = `data:image/png;base64,${imageResponse.data[0].b64_json}`;
+                } else if (imageResponse.data[0].url) {
+                    const imgFetch = await fetch(imageResponse.data[0].url);
+                    const imgBuffer = await imgFetch.arrayBuffer();
+                    const imgBase64 = Buffer.from(imgBuffer).toString('base64');
+                    generatedImage = `data:image/png;base64,${imgBase64}`;
+                }
+                console.log('gpt-image-1 transformation successful!');
+            }
+        } catch (editError) {
+            console.error('gpt-image-1 error:', editError.message);
+            
+            // Fallback to DALL-E 3 if gpt-image-1 fails
+            console.log('Falling back to DALL-E 3...');
+            const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+            const fallbackResponse = await openai.images.generate({
+                model: 'dall-e-3',
+                prompt: 'Photorealistic modern luxury garage interior with polished gray epoxy floor with metallic flakes, hexagonal LED ceiling panels in honeycomb pattern, sleek black modular cabinets, premium car showroom atmosphere, professional photography, clean white and charcoal walls',
+                n: 1,
+                size: '1024x1024',
+                quality: 'hd',
+                response_format: 'b64_json'
+            });
+            
+            if (fallbackResponse.data && fallbackResponse.data[0]) {
+                generatedImage = `data:image/png;base64,${fallbackResponse.data[0].b64_json}`;
+                console.log('DALL-E 3 fallback successful');
+            }
+        }
+        
+        // Save to cache if we got a generated image
+        if (generatedImage) {
+            db.run(
+                'INSERT OR REPLACE INTO image_cache (image_hash, modernization, generated_image) VALUES (?, ?, ?)',
+                [imageHash, modernization, generatedImage],
+                (err) => {
+                    if (err) console.error('Cache save error:', err);
+                    else console.log('Result cached for future requests');
+                }
+            );
+        }
+        
+        res.json({
+            success: true,
+            modernization,
+            generatedImage,
+            cached: false
+        });
+        
+    } catch (error) {
+        console.error('Modernize error:', error);
+        res.status(500).json({ error: 'Failed to generate modernization plan' });
+    }
+});
 
 // Generate AI renovation design
 app.post('/api/generate', async (req, res) => {
@@ -197,7 +580,7 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// Image generation endpoint (GitHub Models API doesn't support DALL-E, using demo)
+// Image generation endpoint (using OpenAI DALL-E)
 app.post('/api/generate-image', async (req, res) => {
     try {
         const { prompt } = req.body;
@@ -206,16 +589,52 @@ app.post('/api/generate-image', async (req, res) => {
             return res.status(400).json({ error: 'Prompt required' });
         }
         
-        // GitHub Models API doesn't support image generation
-        // Return curated demo image for all styles
-        const demoImage = '/images/IMG_3112.webp';
+        // If no OpenAI key, return demo image
+        if (!OPENAI_API_KEY) {
+            return res.json({
+                success: true,
+                demo: true,
+                imageUrl: '/images/IMG_3112.webp',
+                message: 'Demo mode: Image generation requires OpenAI API key'
+            });
+        }
         
-        res.json({
-            success: true,
-            demo: true,
-            imageUrl: demoImage,
-            message: 'Demo mode: Image generation requires OpenAI DALL-E API'
+        console.log('Generating design image with DALL-E 3...');
+        
+        const imageResponse = await fetch(OPENAI_IMAGE_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'dall-e-3',
+                prompt: prompt,
+                n: 1,
+                size: '1024x1024',
+                quality: 'hd',
+                response_format: 'b64_json'
+            })
         });
+        
+        if (!imageResponse.ok) {
+            const error = await imageResponse.text();
+            console.error('DALL-E Error:', error);
+            throw new Error('Image generation failed');
+        }
+        
+        const result = await imageResponse.json();
+        if (result.data && result.data[0]) {
+            const imageUrl = `data:image/png;base64,${result.data[0].b64_json}`;
+            console.log('Design image generated successfully!');
+            
+            res.json({
+                success: true,
+                imageUrl: imageUrl
+            });
+        } else {
+            throw new Error('No image data returned');
+        }
         
     } catch (error) {
         console.error('Image Generation Error:', error);
@@ -595,7 +1014,7 @@ app.listen(PORT, () => {
     ║      GarageAI Server Running!              ║
     ║      http://localhost:${PORT}                 ║
     ╠════════════════════════════════════════════╣
-    ║  OpenAI API: ${process.env.OPENAI_API_KEY ? '✓ Configured' : '✗ Not configured'}           ║
+    ║  GitHub AI: ${process.env.GITHUB_TOKEN ? '✓ Configured' : '✗ Not configured'}              ║
     ╚════════════════════════════════════════════╝
     `);
 });
