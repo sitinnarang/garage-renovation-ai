@@ -409,6 +409,10 @@
                 <!-- Uploaded Image Display with 3D Container -->
                 <div class="ar-3d-container" id="ar3dContainer">
                     <img id="arUploadedImage" class="ar-uploaded-image" src="" alt="Your Garage">
+                    <!-- Placed products container -->
+                    <div class="placed-products-overlay" id="placedProductsOverlay">
+                        <!-- Dynamically added products will appear here -->
+                    </div>
                 </div>
                 
                 <video id="arCameraFeed" autoplay playsinline style="display:none;"></video>
@@ -428,7 +432,7 @@
                 </div>
                 
                 <div class="ar-instructions" id="arInstructions">
-                    <p><i class="fa-solid fa-robot"></i> AI detecting floor surface • <i class="fa-solid fa-hand-pointer"></i> Tap to place</p>
+                    <p><i class="fa-solid fa-box-open"></i> Use product palette below to add items • <i class="fa-solid fa-hand-pointer"></i> Drag to position</p>
                 </div>
                 
                 <!-- AR Controls -->
@@ -492,6 +496,49 @@
                     <!-- Populated by localStorage -->
                 </div>
                 <button class="clear-saved-btn" id="clearSavedImages"><i class="fas fa-trash"></i> Clear All</button>
+            </div>
+            
+            <!-- Product Palette for Adding Items -->
+            <div class="product-palette" id="productPalette">
+                <h4><i class="fas fa-box-open"></i> Add Products to Your Garage</h4>
+                <p class="palette-hint">Drag & drop onto garage, or click to add at center</p>
+                <div class="palette-items" id="paletteItems">
+                    <div class="palette-item" data-product="Cabinet" data-img="images/Showroom-Built-In-2018-scaled.jpg.jpeg">
+                        <div class="palette-icon"><i class="fas fa-archive"></i></div>
+                        <span>Cabinet</span>
+                    </div>
+                    <div class="palette-item" data-product="Workbench" data-img="images/xgarage-makeover-06-after.jpg.pagespeed.ic.sDwnkoEpc2.jpg.jpeg">
+                        <div class="palette-icon"><i class="fas fa-tools"></i></div>
+                        <span>Workbench</span>
+                    </div>
+                    <div class="palette-item" data-product="Tool Chest" data-img="images/x22b.jpg.pagespeed.ic.tSj63FnnZc.jpg.jpeg">
+                        <div class="palette-icon"><i class="fas fa-toolbox"></i></div>
+                        <span>Tool Chest</span>
+                    </div>
+                    <div class="palette-item" data-product="Slatwall" data-img="images/x10b.jpg.pagespeed.ic.86sszTnHaR_20(1).webp.jpeg">
+                        <div class="palette-icon"><i class="fas fa-grip-lines"></i></div>
+                        <span>Slatwall</span>
+                    </div>
+                    <div class="palette-item" data-product="Overhead Rack" data-img="images/xgarage_makeover_253_RET.jpg.pagespeed.ic.TSSkO_cipq.webp.jpeg">
+                        <div class="palette-icon"><i class="fas fa-pallet"></i></div>
+                        <span>Overhead Rack</span>
+                    </div>
+                    <div class="palette-item" data-product="LED Light" data-img="images/cool-garage-lighting-ideas.webp">
+                        <div class="palette-icon"><i class="fas fa-lightbulb"></i></div>
+                        <span>LED Light</span>
+                    </div>
+                </div>
+                <button class="btn btn-magenta btn-small" id="aiSuggestPlacement">
+                    <i class="fas fa-robot"></i> AI Suggest Placement
+                </button>
+            </div>
+            
+            <!-- Added Products List -->
+            <div class="placed-items-panel" id="placedItemsPanel">
+                <h4><i class="fas fa-magic"></i> AI Added Products</h4>
+                <div class="placed-items-list" id="placedItemsList">
+                    <p class="no-items">Click a product above to add it to your garage using AI.</p>
+                </div>
             </div>
             
             <div class="ar-actions">
@@ -717,12 +764,29 @@
                         </div>
                         <div class="analysis-buttons">
                             <button class="btn btn-gold btn-large" id="runAnalysis">
-                                <i class="fas fa-brain"></i> Run Full AI Analysis
+                                <i class="fas fa-brain"></i> Full Analysis
                             </button>
                             <button class="btn btn-magenta btn-large" id="modernizeGarage">
                                 <i class="fas fa-magic"></i> AI Modernize
                             </button>
+                            <button class="btn btn-cyan btn-large" id="generate4Designs">
+                                <i class="fas fa-images"></i> 4 Designs
+                            </button>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- 4 Designs Results Section -->
+                <div class="designs-4-results" id="designs4Results">
+                    <div class="designs-4-loading" id="designs4Loading">
+                        <div class="loading-animation">
+                            <i class="fas fa-images fa-spin"></i>
+                        </div>
+                        <h3>AI Generating 4 Design Styles...</h3>
+                        <p>Creating Cyberpunk, Scandinavian, Industrial, and Gym styles</p>
+                    </div>
+                    <div class="designs-4-content" id="designs4Content">
+                        <!-- 4 Designs populated by JS -->
                     </div>
                 </div>
                 
@@ -1573,16 +1637,13 @@
                 
                 await startCamera();
                 
+                // Don't show overlay product by default - use product palette instead
                 if (productImage) {
                     arProductImage.src = productImage;
-                    arOverlayProduct.style.display = 'block';
-                } else {
-                    arProductImage.src = arProducts[0].image;
-                    arOverlayProduct.style.display = 'block';
                 }
+                arOverlayProduct.style.display = 'none';
                 
-                // Wait for AI to detect floor then place
-                setTimeout(aiAutoPlace, 1500);
+                // Don't auto-place - let user add from palette
             }
         }
 
@@ -1874,9 +1935,11 @@
                 arUploadedImage.src = imageData;
                 arUploadedImage.classList.add('active');
             }
-            if (arOverlayProduct) arOverlayProduct.style.display = 'block';
-            document.getElementById('arControlsPanel')?.style.setProperty('display', 'flex');
-            document.getElementById('arInstructions')?.style.setProperty('display', 'block');
+            // Hide the old overlay product - use product palette instead
+            if (arOverlayProduct) arOverlayProduct.style.display = 'none';
+            // Hide old controls - use product palette controls
+            document.getElementById('arControlsPanel')?.style.setProperty('display', 'none');
+            document.getElementById('arInstructions')?.style.setProperty('display', 'none');
             // Show 3D controls
             document.getElementById('ar3dControls')?.classList.add('active');
             reset3dTransform();
@@ -2298,6 +2361,326 @@ Format as JSON with keys: condition, flooring, storage, lighting, scope`;
             }
         });
 
+        // ==================== Product Placement System ====================
+        const productPalette = document.getElementById('productPalette');
+        const placedProductsOverlay = document.getElementById('placedProductsOverlay');
+        const placedItemsList = document.getElementById('placedItemsList');
+        const aiSuggestPlacementBtn = document.getElementById('aiSuggestPlacement');
+        
+        let placedProducts = [];
+        let productIdCounter = 0;
+        let originalGarageImage = null; // Store original image for undo
+        let isProcessingProduct = false;
+        
+        // Check if garage image is uploaded
+        function isGarageImageUploaded() {
+            return arUploadedImage && arUploadedImage.classList.contains('active') && arUploadedImage.src;
+        }
+        
+        // Product icon mapping
+        const productIcons = {
+            'Cabinet': 'fa-archive',
+            'Workbench': 'fa-tools',
+            'Tool Chest': 'fa-toolbox',
+            'Slatwall': 'fa-grip-lines',
+            'Overhead Rack': 'fa-pallet',
+            'LED Light': 'fa-lightbulb'
+        };
+        
+        // Product colors
+        const productColors = {
+            'Cabinet': '#00f5ff',
+            'Workbench': '#ff00ff',
+            'Tool Chest': '#ffcc00',
+            'Slatwall': '#00ff88',
+            'Overhead Rack': '#ff6b35',
+            'LED Light': '#ffffff'
+        };
+        
+        // Add product to garage using AI
+        async function addProductToGarage(productType, imgSrc, position = { x: 50, y: 60 }) {
+            if (!isGarageImageUploaded()) {
+                showValidationNotification('Please upload a garage image first!', 'error');
+                return;
+            }
+            
+            if (isProcessingProduct) {
+                showValidationNotification('Please wait, AI is processing...', 'error');
+                return;
+            }
+            
+            // Store original image on first add
+            if (!originalGarageImage) {
+                originalGarageImage = arUploadedImage.src;
+            }
+            
+            isProcessingProduct = true;
+            
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('aiLoadingOverlay');
+            const loadingText = loadingOverlay?.querySelector('p');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                if (loadingText) loadingText.textContent = `AI adding ${productType} to your garage...`;
+            }
+            
+            try {
+                const response = await fetch('/api/add-product-to-garage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        imageUrl: arUploadedImage.src,
+                        productType: productType,
+                        position: position
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.imageUrl) {
+                    // Update the garage image with AI-generated result
+                    arUploadedImage.src = result.imageUrl;
+                    
+                    // Track added product
+                    const productId = ++productIdCounter;
+                    placedProducts.push({
+                        id: productId,
+                        type: productType,
+                        icon: productIcons[productType] || 'fa-box',
+                        color: productColors[productType] || '#00f5ff'
+                    });
+                    updatePlacedItemsList();
+                    
+                    showValidationNotification(`${productType} added to your garage!`, 'success');
+                } else {
+                    throw new Error(result.message || 'Failed to add product');
+                }
+                
+            } catch (error) {
+                console.error('Add product error:', error);
+                showValidationNotification(`Could not add ${productType}: ${error.message}`, 'error');
+            } finally {
+                isProcessingProduct = false;
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+            }
+        }
+        
+        // Drag and Drop for palette items
+        let draggedProductType = null;
+        let dragGhost = null;
+        
+        // Make palette items draggable
+        document.querySelectorAll('.palette-item').forEach(item => {
+            item.setAttribute('draggable', 'true');
+            
+            item.addEventListener('dragstart', (e) => {
+                if (!isGarageImageUploaded()) {
+                    e.preventDefault();
+                    showValidationNotification('Please upload a garage image first!', 'error');
+                    return;
+                }
+                draggedProductType = item.dataset.product;
+                item.classList.add('dragging');
+                
+                // Create drag ghost
+                dragGhost = document.createElement('div');
+                dragGhost.className = 'drag-ghost';
+                dragGhost.innerHTML = `<i class="fas ${productIcons[draggedProductType]}"></i><span>${draggedProductType}</span>`;
+                dragGhost.style.cssText = 'position: fixed; pointer-events: none; z-index: 9999; opacity: 0;';
+                document.body.appendChild(dragGhost);
+                
+                e.dataTransfer.effectAllowed = 'copy';
+                e.dataTransfer.setData('text/plain', draggedProductType);
+            });
+            
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                draggedProductType = null;
+                if (dragGhost) {
+                    dragGhost.remove();
+                    dragGhost = null;
+                }
+            });
+        });
+        
+        // Drop zone - the garage image container (reuse existing reference)
+        const dropZone = ar3dContainer || document.getElementById('ar3dContainer');
+        
+        dropZone?.addEventListener('dragover', (e) => {
+            if (!draggedProductType || !isGarageImageUploaded()) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            dropZone.classList.add('drop-target');
+            
+            // Update ghost position
+            if (dragGhost) {
+                dragGhost.style.left = `${e.clientX + 10}px`;
+                dragGhost.style.top = `${e.clientY + 10}px`;
+                dragGhost.style.opacity = '1';
+            }
+        });
+        
+        dropZone?.addEventListener('dragleave', (e) => {
+            dropZone.classList.remove('drop-target');
+            if (dragGhost) dragGhost.style.opacity = '0';
+        });
+        
+        dropZone?.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drop-target');
+            
+            if (!draggedProductType || !isGarageImageUploaded()) return;
+            
+            // Calculate drop position as percentage
+            const rect = dropZone.getBoundingClientRect();
+            const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+            const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+            
+            console.log(`Dropping ${draggedProductType} at position: ${x}%, ${y}%`);
+            
+            // Add product at drop position
+            addProductToGarage(draggedProductType, null, { x, y });
+            
+            draggedProductType = null;
+            if (dragGhost) {
+                dragGhost.remove();
+                dragGhost = null;
+            }
+        });
+        
+        // Undo - restore original garage image
+        function undoAllProducts() {
+            if (originalGarageImage) {
+                arUploadedImage.src = originalGarageImage;
+                placedProducts = [];
+                productIdCounter = 0;
+                updatePlacedItemsList();
+                showValidationNotification('Restored original garage image', 'success');
+            }
+        }
+        
+        // Update placed items list
+        function updatePlacedItemsList() {
+            if (!placedItemsList) return;
+            
+            if (placedProducts.length === 0) {
+                placedItemsList.innerHTML = '<p class="no-items">Click a product above to add it to your garage using AI.</p>';
+                return;
+            }
+            
+            let html = placedProducts.map(p => `
+                <div class="placed-item" data-id="${p.id}">
+                    <div class="placed-item-icon" style="color: ${p.color}"><i class="fas ${p.icon}"></i></div>
+                    <span>${p.type}</span>
+                </div>
+            `).join('');
+            
+            // Add reset button if products were added
+            if (originalGarageImage && placedProducts.length > 0) {
+                html += `<button class="btn-reset-products" id="resetProducts"><i class="fas fa-undo"></i> Reset</button>`;
+            }
+            
+            placedItemsList.innerHTML = html;
+            
+            // Add reset handler
+            document.getElementById('resetProducts')?.addEventListener('click', undoAllProducts);
+        }
+        
+        // Palette item click handlers
+        document.querySelectorAll('.palette-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const productType = item.dataset.product;
+                const imgSrc = item.dataset.img;
+                addProductToGarage(productType, imgSrc);
+            });
+        });
+        
+        // AI Suggest Placement - adds multiple products via AI
+        aiSuggestPlacementBtn?.addEventListener('click', async () => {
+            if (!isGarageImageUploaded()) {
+                showValidationNotification('Please upload a garage image first!', 'error');
+                return;
+            }
+            
+            if (isProcessingProduct) {
+                showValidationNotification('Please wait, AI is processing...', 'error');
+                return;
+            }
+            
+            const btn = aiSuggestPlacementBtn;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI Working...';
+            btn.disabled = true;
+            
+            // Store original
+            if (!originalGarageImage) {
+                originalGarageImage = arUploadedImage.src;
+            }
+            
+            const loadingOverlay = document.getElementById('aiLoadingOverlay');
+            const loadingText = loadingOverlay?.querySelector('p');
+            
+            try {
+                // Add Cabinet, Workbench, and Slatwall in sequence
+                const productsToAdd = ['Cabinet', 'Workbench', 'Slatwall'];
+                
+                for (const productType of productsToAdd) {
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'flex';
+                        if (loadingText) loadingText.textContent = `AI adding ${productType}...`;
+                    }
+                    
+                    isProcessingProduct = true;
+                    
+                    const response = await fetch('/api/add-product-to-garage', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            imageUrl: arUploadedImage.src,
+                            productType: productType
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success && result.imageUrl) {
+                        arUploadedImage.src = result.imageUrl;
+                        placedProducts.push({
+                            id: ++productIdCounter,
+                            type: productType,
+                            icon: productIcons[productType],
+                            color: productColors[productType]
+                        });
+                        updatePlacedItemsList();
+                    }
+                }
+                
+                showValidationNotification('AI added Cabinet, Workbench & Slatwall!', 'success');
+                
+            } catch (err) {
+                console.error('AI Suggest error:', err);
+                showValidationNotification('AI suggestion failed. Try adding manually.', 'error');
+            } finally {
+                isProcessingProduct = false;
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+        
+        // Reset placed products when modal closes
+        const originalCloseArModal = closeArModal;
+        closeArModal = function() {
+            // Reset all product tracking
+            placedProducts = [];
+            productIdCounter = 0;
+            originalGarageImage = null;
+            isProcessingProduct = false;
+            updatePlacedItemsList();
+            
+            originalCloseArModal();
+        };
+
         // ==================== AI Features ====================
         
         // Check if API key is configured
@@ -2559,7 +2942,7 @@ Format as JSON with keys: condition, flooring, storage, lighting, scope`;
                     recommendImageData = e.target.result;
                     recommendPreviewImg.src = recommendImageData;
                     recommendDropzone.style.display = 'none';
-                    if (recommendPreview) recommendPreview.style.display = 'block';
+                    if (recommendPreview) recommendPreview.style.display = 'flex';
                 };
                 reader.readAsDataURL(file);
             }
@@ -2617,7 +3000,7 @@ Format as JSON with keys: condition, flooring, storage, lighting, scope`;
         });
         
         function displayRecommendations(recommendations) {
-            const icons = { 'flooring': 'layer-group', 'cabinet': 'box-open', 'slatwall': 'grip-vertical', 'light': 'lightbulb', 'storage': 'boxes-stacked', 'work': 'hammer' };
+            const icons = { 'flooring': 'layer-group', 'floor': 'layer-group', 'cabinet': 'box-open', 'slatwall': 'grip-vertical', 'light': 'lightbulb', 'led': 'lightbulb', 'storage': 'boxes-stacked', 'work': 'hammer', 'rack': 'warehouse', 'ceiling': 'border-top-left', 'bike': 'bicycle', 'hook': 'anchor', 'lift': 'arrow-up' };
             
             recommendationsList.innerHTML = recommendations.map(rec => {
                 let icon = 'star';
@@ -2794,6 +3177,81 @@ Format as JSON with keys: condition, flooring, storage, lighting, scope`;
                 modernizeLoading.style.display = 'none';
             }
         });
+        
+        // Generate 4 Designs Button Handler
+        const generate4Designs = document.getElementById('generate4Designs');
+        const designs4Results = document.getElementById('designs4Results');
+        const designs4Loading = document.getElementById('designs4Loading');
+        const designs4Content = document.getElementById('designs4Content');
+        
+        generate4Designs?.addEventListener('click', async () => {
+            if (!analysisImageData) return;
+            
+            designs4Results?.classList.add('show');
+            designs4Loading.style.display = 'block';
+            designs4Content.innerHTML = '';
+            
+            try {
+                // Convert base64 to data URL format for the API
+                const response = await fetch('/api/generate-4-designs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageUrl: analysisImageData })
+                });
+                
+                if (!response.ok) throw new Error('Failed to generate designs');
+                
+                const data = await response.json();
+                display4DesignsResults(data.results, analysisImageData, data.demo);
+            } catch (error) {
+                console.error('Generate 4 designs error:', error);
+                designs4Content.innerHTML = `
+                    <div class="analysis-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Design Generation Failed</h3>
+                        <p>Unable to generate designs. Please try again later.</p>
+                    </div>
+                `;
+            } finally {
+                designs4Loading.style.display = 'none';
+            }
+        });
+        
+        function display4DesignsResults(results, originalImage, isDemo) {
+            const cardsHtml = results.map(item => `
+                <div class="design-card">
+                    <h4><i class="fas fa-palette"></i> ${item.name}</h4>
+                    ${item.url 
+                        ? `<img src="${item.url}" alt="${item.name}" loading="lazy">`
+                        : `<div class="placeholder">
+                               <span>${isDemo ? 'Demo Mode - Add XAI_API_KEY' : item.error || 'Image unavailable'}</span>
+                           </div>`
+                    }
+                </div>
+            `).join('');
+            
+            designs4Content.innerHTML = `
+                <div class="designs-4-header">
+                    <h3><i class="fas fa-images"></i> 4 AI Design Recommendations</h3>
+                    ${isDemo ? '<span class="demo-badge">Demo Mode</span>' : '<span class="ai-generated-badge"><i class="fas fa-robot"></i> AI Generated</span>'}
+                </div>
+                <div class="designs-4-original">
+                    <div class="original-label">
+                        <i class="fas fa-camera"></i> Your Original Photo
+                    </div>
+                    <img src="${originalImage}" alt="Original Garage">
+                </div>
+                <div class="designs-4-grid">
+                    ${cardsHtml}
+                </div>
+                <div class="designs-4-cta">
+                    <p>Love one of these designs? Let's make it happen!</p>
+                    <button class="btn btn-gold" onclick="scrollToSection('consultation-form')">
+                        <i class="fas fa-calendar-check"></i> Book Free Consultation
+                    </button>
+                </div>
+            `;
+        }
         
         function displayModernizeResults(modernizationText, originalImage, generatedImage) {
             const sections = parseModernization(modernizationText);

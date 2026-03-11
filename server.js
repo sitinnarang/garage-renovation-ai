@@ -67,6 +67,19 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-3-5-sonnet-20241022';
 const ANTHROPIC_ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
+// xAI API Configuration (for garage-app style 4 design recommendations)
+const XAI_API_KEY = process.env.XAI_API_KEY;
+const XAI_MODEL = 'grok-imagine-image';
+const XAI_IMAGE_EDIT_ENDPOINT = 'https://api.x.ai/v1/images/edits';
+
+// 4 Design Recommendations - same as garage-app
+const DESIGN_IDEAS = [
+    { name: 'Cyberpunk Neon', promptBase: 'futuristic cyberpunk garage: neon blue/purple LED strips around doors/ceiling, glossy black epoxy floor with reflections, dark metallic walls, high-tech shelves, bike on stand' },
+    { name: 'Minimalist Scandinavian', promptBase: 'clean minimalist Scandinavian: light gray walls, wood accents, bright white epoxy floor, warm wood cabinets, soft neutral LED lighting, organized shelves, bike mount, airy feel' },
+    { name: 'Industrial Luxury', promptBase: 'industrial luxury: hexagon LED panels on ceiling cool tones, polished concrete epoxy floor, black steel cabinets, pegboard tools, ambient lighting, premium bike display, rugged sophisticated' },
+    { name: 'High-Tech Gym Hybrid', promptBase: 'high-tech workshop + mini gym: dark gray slat walls, matte black floor with LED edges, foldable workbench, pull-up bar, hexagon smart lights, bike repair stand, motivational elements, functional modern' }
+];
+
 // Helper function to call Claude API with vision
 async function callClaudeVision(imageData, prompt) {
     const response = await fetch(ANTHROPIC_ENDPOINT, {
@@ -299,6 +312,184 @@ app.post('/api/validate-garage-image', async (req, res) => {
             valid: true, 
             message: 'Validation skipped',
             detected: 'unknown'
+        });
+    }
+});
+
+// Generate 4 Design Recommendations using xAI API (garage-app style)
+app.post('/api/generate-4-designs', async (req, res) => {
+    const { imageUrl } = req.body;
+    
+    if (!imageUrl) {
+        return res.status(400).json({ error: 'Image URL required' });
+    }
+    
+    // Check for xAI API key
+    if (!XAI_API_KEY) {
+        return res.json({
+            success: true,
+            demo: true,
+            results: DESIGN_IDEAS.map(idea => ({
+                name: idea.name,
+                url: null,
+                description: idea.promptBase
+            }))
+        });
+    }
+    
+    try {
+        console.log('Generating 4 design recommendations using xAI...');
+        
+        const results = await Promise.all(
+            DESIGN_IDEAS.map(async (idea) => {
+                try {
+                    const prompt = `Reference garage photo as exact base. ${idea.promptBase}. Keep exact camera angle, doors, stairs, layout, structure unchanged. Only update lighting, materials, colors, furniture, style. Realistic, high detail.`;
+                    
+                    const response = await fetch(XAI_IMAGE_EDIT_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${XAI_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: XAI_MODEL,
+                            prompt: prompt,
+                            image: {
+                                url: imageUrl,
+                                type: 'image_url'
+                            }
+                        }),
+                        signal: AbortSignal.timeout(120000)
+                    });
+                    
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        console.error(`xAI API error for ${idea.name}:`, errData);
+                        throw new Error(errData?.error || errData?.error?.message || `API error ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const imageUrlResult = data.data?.[0]?.url;
+                    
+                    return { 
+                        name: idea.name, 
+                        url: imageUrlResult,
+                        description: idea.promptBase
+                    };
+                } catch (err) {
+                    console.error(`Error generating ${idea.name}:`, err.message);
+                    return { 
+                        name: idea.name, 
+                        url: null,
+                        description: idea.promptBase,
+                        error: err.message
+                    };
+                }
+            })
+        );
+        
+        res.json({ success: true, results });
+        
+    } catch (error) {
+        console.error('Generate 4 designs error:', error);
+        res.status(500).json({ error: 'Failed to generate designs', message: error.message });
+    }
+});
+
+// Add Product to Garage - AI transforms garage image with specified product
+app.post('/api/add-product-to-garage', async (req, res) => {
+    const { imageUrl, productType, position } = req.body;
+    
+    if (!imageUrl) {
+        return res.status(400).json({ error: 'Garage image URL required' });
+    }
+    
+    if (!productType) {
+        return res.status(400).json({ error: 'Product type required' });
+    }
+    
+    // Product prompts for realistic integration
+    const productPrompts = {
+        'Cabinet': 'Add a sleek black modern storage cabinet system with LED under-cabinet lighting on the wall. Professional garage cabinet with chrome handles.',
+        'Workbench': 'Add a professional heavy-duty metal workbench with built-in tool organization and pegboard. Industrial style workspace.',
+        'Tool Chest': 'Add a premium red/black rolling tool chest with multiple drawers. Professional mechanic tool storage.',
+        'Slatwall': 'Add gray slatwall panels on the wall with organized hooks, bins and tool holders. Clean organized storage system.',
+        'Overhead Rack': 'Add ceiling-mounted overhead storage racks with wire shelving. Strong industrial ceiling storage.',
+        'LED Light': 'Add modern hexagonal LED ceiling lights providing bright workshop illumination. Honeycomb lighting pattern.'
+    };
+    
+    const productPrompt = productPrompts[productType] || `Add a ${productType} to this garage`;
+    
+    // Position hints
+    let positionHint = '';
+    if (position) {
+        if (position.x < 33) positionHint = 'on the left side';
+        else if (position.x > 66) positionHint = 'on the right side';
+        else positionHint = 'in the center';
+        
+        if (position.y < 40) positionHint += ' near the ceiling/top';
+        else if (position.y > 70) positionHint += ' near the floor/bottom';
+    }
+    
+    // Check for xAI API key
+    if (!XAI_API_KEY) {
+        return res.json({
+            success: false,
+            demo: true,
+            message: 'AI not configured - showing placeholder',
+            originalImage: imageUrl
+        });
+    }
+    
+    try {
+        console.log(`Adding ${productType} to garage using xAI...`);
+        
+        const prompt = `Reference this exact garage photo. ${productPrompt} ${positionHint}. Keep the exact same camera angle, walls, floor, doors, and overall structure. Only add the new ${productType}. Photorealistic, high quality, natural lighting integration.`;
+        
+        const response = await fetch(XAI_IMAGE_EDIT_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${XAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: XAI_MODEL,
+                prompt: prompt,
+                image: {
+                    url: imageUrl,
+                    type: 'image_url'
+                }
+            }),
+            signal: AbortSignal.timeout(120000)
+        });
+        
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            console.error('xAI add product error:', errData);
+            throw new Error(errData?.error?.message || `API error ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const generatedImageUrl = data.data?.[0]?.url;
+        
+        if (!generatedImageUrl) {
+            throw new Error('No image URL in response');
+        }
+        
+        console.log(`Successfully added ${productType} to garage`);
+        
+        res.json({
+            success: true,
+            imageUrl: generatedImageUrl,
+            productType: productType
+        });
+        
+    } catch (error) {
+        console.error('Add product to garage error:', error);
+        res.status(500).json({ 
+            error: 'Failed to add product', 
+            message: error.message,
+            originalImage: imageUrl
         });
     }
 });
@@ -580,7 +771,7 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// Image generation endpoint (using OpenAI DALL-E)
+// Image generation endpoint (using xAI grok-imagine-image)
 app.post('/api/generate-image', async (req, res) => {
     try {
         const { prompt } = req.body;
@@ -589,43 +780,41 @@ app.post('/api/generate-image', async (req, res) => {
             return res.status(400).json({ error: 'Prompt required' });
         }
         
-        // If no OpenAI key, return demo image
-        if (!OPENAI_API_KEY) {
+        // If no xAI key, return demo image
+        if (!XAI_API_KEY) {
             return res.json({
                 success: true,
                 demo: true,
                 imageUrl: '/images/IMG_3112.webp',
-                message: 'Demo mode: Image generation requires OpenAI API key'
+                message: 'Demo mode: Image generation requires XAI_API_KEY'
             });
         }
         
-        console.log('Generating design image with DALL-E 3...');
+        console.log('Generating design image with xAI grok-imagine-image...');
         
-        const imageResponse = await fetch(OPENAI_IMAGE_ENDPOINT, {
+        const imageResponse = await fetch('https://api.x.ai/v1/images/generations', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
+                'Authorization': `Bearer ${XAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: 'dall-e-3',
+                model: 'grok-imagine-image',
                 prompt: prompt,
-                n: 1,
-                size: '1024x1024',
-                quality: 'hd',
-                response_format: 'b64_json'
-            })
+                n: 1
+            }),
+            signal: AbortSignal.timeout(120000)
         });
         
         if (!imageResponse.ok) {
-            const error = await imageResponse.text();
-            console.error('DALL-E Error:', error);
-            throw new Error('Image generation failed');
+            const error = await imageResponse.json().catch(() => ({}));
+            console.error('xAI Image Generation Error:', error);
+            throw new Error(error?.error || 'Image generation failed');
         }
         
         const result = await imageResponse.json();
         if (result.data && result.data[0]) {
-            const imageUrl = `data:image/png;base64,${result.data[0].b64_json}`;
+            const imageUrl = result.data[0].url || (result.data[0].b64_json ? `data:image/png;base64,${result.data[0].b64_json}` : null);
             console.log('Design image generated successfully!');
             
             res.json({
